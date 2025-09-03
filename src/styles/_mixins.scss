@@ -1,0 +1,214 @@
+@use "variables";
+
+// Responsive breakpoints
+@mixin respond-above($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  @media (max-width: calc(#{$breakpoint} - 1px)) {
+    @content;
+  }
+}
+
+@mixin respond-between($min, $max) {
+  @media (min-width: $min) and (max-width: calc(#{$max} - 1px)) {
+    @content;
+  }
+}
+
+// Convenience breakpoint mixins based on the project's standard breakpoints
+@mixin respond-xs {
+  @include respond-above(variables.$breakpoint-xs) {
+    @content;
+  }
+}
+
+@mixin respond-sm {
+  @include respond-above(variables.$breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin respond-md {
+  @include respond-above(variables.$breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin respond-lg {
+  @include respond-above(variables.$breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin respond-xl {
+  @include respond-above(variables.$breakpoint-xl) {
+    @content;
+  }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button reset
+@mixin button-reset {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+// Visually hidden (screen reader only)
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Hover effects
+@mixin hover-transition($property: all, $duration: 0.2s) {
+  transition: #{$property} #{$duration} ease-in-out;
+}
+
+// Container with max-width
+@mixin container($max-width: 1280px) {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 variables.$spacing-4;
+
+  @include respond-above(variables.$breakpoint-sm) {
+    padding: 0 variables.$spacing-6;
+  }
+
+  @include respond-above(variables.$breakpoint-lg) {
+    padding: 0 variables.$spacing-8;
+  }
+}
+
+// Background grain texture utility
+@mixin grain-background($opacity: variables.$grain-texture-opacity) {
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: url(#{variables.$grain-texture-url}); // Fallback
+    background-image: url(#{variables.$grain-texture-webp-url}); // Modern browsers
+    background-repeat: repeat;
+    background-size: #{variables.$grain-texture-size}
+      #{variables.$grain-texture-size};
+    opacity: $opacity;
+    mix-blend-mode: multiply;
+    z-index: -1;
+  }
+}
+
+// Blurred hero background utility
+@mixin blurred-hero-background(
+  $image-url: variables.$blurred-hero-background-image-url
+) {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: calc(-14vw);
+    left: calc(-2.3vw);
+    height: calc(68.6vw);
+    width: calc(104.6vw);
+    background: url($image-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(16px);
+    z-index: -2;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: calc(40vw);
+    left: 0;
+    right: 0;
+    top: calc(18.6vw);
+    background: linear-gradient(
+      180deg,
+      rgba(variables.$color-primary, 0) 0%,
+      #{variables.$color-primary} 91.5%,
+      #{variables.$color-primary} 100%
+    );
+    z-index: -2;
+    pointer-events: none;
+  }
+}
+
+// Blurred footer background utility
+@mixin blurred-footer-background(
+  $image-url: variables.$blurred-hero-background-image-url
+) {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: calc(-14vw);
+    left: calc(-2.3vw);
+    height: calc(68.6vw);
+    width: calc(104.6vw);
+    background: url($image-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(16px);
+    z-index: -2;
+    opacity: 0.5;
+    pointer-events: none;
+    transform: rotate(180deg);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: calc(40vw);
+    left: 0;
+    right: 0;
+    bottom: calc(18.6vw);
+    background: linear-gradient(
+      180deg,
+      rgba(variables.$color-primary, 0) 0%,
+      #{variables.$color-primary} 91.5%,
+      #{variables.$color-primary} 100%
+    );
+    z-index: -2;
+    pointer-events: none;
+    transform: rotate(180deg);
+  }
+}

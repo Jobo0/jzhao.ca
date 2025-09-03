@@ -1,0 +1,220 @@
+// Colors
+
+// Primary (Purple)
+$color-primary-dark: #140066;
+$color-primary: #4422cc;
+$color-primary-light: #7a59ff;
+
+// Secondary (Orange)
+$color-secondary-dark: #cc5214;
+$color-secondary: #ff7733;
+$color-secondary-light: #ffaa80;
+
+// Success (Green)
+$color-success-dark: #077a07;
+$color-success: #21a321;
+$color-success-light: #daf7da;
+
+// Error (Red)
+$color-error-dark: #b31f12;
+$color-error: #e63d2e;
+$color-error-light: #ffe3e0;
+
+// Neutrals
+$color-black: #12121a;
+$color-gray-900: #464659;
+$color-gray-700: #77778c;
+$color-gray-300: #b0b0bf;
+$color-gray-100: #ededf2;
+$color-white: #ffffff;
+
+// Shades
+$color-shade-dark-90: rgba(13, 13, 26, 0.9);
+$color-shade-dark-70: rgba(13, 13, 26, 0.7);
+$color-shade-dark-50: rgba(13, 13, 26, 0.5);
+$color-shade-dark-30: rgba(13, 13, 26, 0.3);
+$color-shade-dark-10: rgba(13, 13, 26, 0.1);
+
+// Tints
+$color-tint-light-90: rgba(255, 255, 255, 0.9);
+$color-tint-light-70: rgba(255, 255, 255, 0.7);
+$color-tint-light-50: rgba(255, 255, 255, 0.5);
+$color-tint-light-30: rgba(255, 255, 255, 0.3);
+$color-tint-light-10: rgba(255, 255, 255, 0.1);
+
+// Backgrounds
+$color-background-beige: #ffecd9;
+
+// Typography
+
+// Font Families
+$font-family-albert-sans:
+  "Albert Sans",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  Oxygen,
+  Ubuntu,
+  Cantarell,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-inter:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  Oxygen,
+  Ubuntu,
+  Cantarell,
+  "Helvetica Neue",
+  sans-serif;
+
+// Font Weights
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Title Styles (Albert Sans)
+$title-large-size: 6rem; // 96px
+$title-large-line-height: 6rem; // 96px
+$title-large-letter-spacing: -3px;
+$title-large-weight: $font-weight-normal;
+
+$title-medium-size: 4rem; // 64px
+$title-medium-line-height: 4.5rem; // 72px
+$title-medium-letter-spacing: -2px;
+$title-medium-weight: $font-weight-normal;
+
+$title-small-size: 2.5rem; // 40px
+$title-small-line-height: 3rem; // 48px
+$title-small-letter-spacing: -1.25px;
+$title-small-weight: $font-weight-normal;
+
+$title-small-alt-size: 2rem; // 32px
+$title-small-alt-line-height: 2.5rem; // 40px
+$title-small-alt-letter-spacing: -1px;
+$title-small-alt-weight: $font-weight-normal;
+
+$title-small-medium-size: 2.5rem; // 40px
+$title-small-medium-line-height: 3rem; // 48px
+$title-small-medium-letter-spacing: -1.25px;
+$title-small-medium-weight: $font-weight-medium;
+
+// Mobile Title Styles (Albert Sans)
+$title-large-size-mobile: 3rem; // 48px
+$title-large-line-height-mobile: 3.5rem; // 56px
+$title-large-letter-spacing-mobile: -1.5px;
+$title-large-size-mobile-large: 4.5rem; // 72px
+$title-large-line-height-mobile-large: 4.5rem; // 72px
+
+$title-medium-size-mobile: 2.5rem; // 40px
+$title-medium-line-height-mobile: 3rem; // 48px
+$title-medium-letter-spacing-mobile: -1.25px;
+
+$title-small-size-mobile: 2rem; // 32px
+$title-small-line-height-mobile: 2.5rem; // 40px
+$title-small-letter-spacing-mobile: -1px;
+
+// Body Styles (Inter)
+$body-large-size: 1.5rem; // 24px
+$body-large-line-height: 2rem; // 32px
+$body-large-weight: $font-weight-normal;
+
+$body-large-alt-size: 1.25rem; // 20px
+$body-large-alt-line-height: 1.75rem; // 28px
+$body-large-alt-weight: $font-weight-normal;
+
+$body-large-strong-size: 1.5rem; // 24px
+$body-large-strong-line-height: 2rem; // 32px
+$body-large-strong-weight: $font-weight-medium;
+
+$body-large-strong-alt-size: 1.25rem; // 20px
+$body-large-strong-alt-line-height: 1.75rem; // 28px
+$body-large-strong-alt-weight: $font-weight-medium;
+
+$body-medium-size: 1rem; // 16px
+$body-medium-line-height: 1.5rem; // 24px
+$body-medium-weight: $font-weight-normal;
+
+$body-medium-strong-size: 1rem; // 16px
+$body-medium-strong-line-height: 1.5rem; // 24px
+$body-medium-strong-weight: $font-weight-medium;
+
+$body-small-size: 0.875rem; // 14px
+$body-small-line-height: 1.25rem; // 20px
+$body-small-weight: $font-weight-normal;
+
+$body-small-strong-size: 0.875rem; // 14px
+$body-small-strong-line-height: 1.25rem; // 20px
+$body-small-strong-weight: $font-weight-medium;
+
+// Mobile Body Styles (Inter)
+$body-large-size-mobile: 1.25rem; // 20px
+$body-large-line-height-mobile: 1.75rem; // 28px
+
+$body-large-strong-size-mobile: 1.25rem; // 20px
+$body-large-strong-line-height-mobile: 1.75rem; // 28px
+
+// Special Styles (Albert Sans)
+$button-size: 1rem; // 16px
+$button-line-height: 1.5rem; // 24px
+$button-letter-spacing: 1px;
+$button-weight: $font-weight-medium;
+
+$menu-size: 1rem; // 16px
+$menu-line-height: 1.5rem; // 24px
+$menu-weight: $font-weight-medium;
+
+$overline-size: 0.875rem; // 14px
+$overline-line-height: 1.25rem; // 20px
+$overline-letter-spacing: 2px;
+$overline-weight: $font-weight-medium;
+
+// Legacy font sizes for backwards compatibility
+$font-size-sm: $body-small-size;
+$font-size-base: $body-medium-size;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+
+// Spacing
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-6: 1.5rem;
+$spacing-8: 2rem;
+$spacing-16: 4rem;
+
+// Breakpoints
+$breakpoint-xs: 376px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// Border radius
+$border-radius-sm: 0.25rem;
+$border-radius: 0.375rem;
+$border-radius-lg: 0.5rem;
+
+// Shadows
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+// Z-index
+$z-sticky: 50;
+$z-modal: 100;
+
+// Background Variables (for grain texture)
+$grain-texture-size: 512px; // Matches the actual texture size
+$grain-texture-url: "/assets/grain-texture-full.png";
+$grain-texture-webp-url: "/assets/grain-texture-full.webp";
+$grain-texture-opacity: 0.7; // Default opacity for grain texture
+
+// Background Variables (for blurred hero background)
+$blurred-hero-background-image-url: "/assets/background-splash-full.webp";

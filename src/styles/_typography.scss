@@ -1,0 +1,275 @@
+@use "variables";
+@use "mixins";
+@use "sass:color";
+
+// Typography
+html {
+  font-size: variables.$font-size-base;
+}
+
+body {
+  font-family: variables.$font-family-inter;
+  font-weight: variables.$font-weight-normal;
+  line-height: 1.6;
+  color: variables.$color-gray-900;
+}
+
+// Title Styles (Albert Sans)
+.title-large {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$title-large-size-mobile;
+  line-height: variables.$title-large-line-height-mobile;
+  font-weight: variables.$title-large-weight;
+  letter-spacing: variables.$title-large-letter-spacing-mobile;
+  @include mixins.respond-sm {
+    font-size: variables.$title-large-size-mobile-large;
+    line-height: variables.$title-large-line-height-mobile-large;
+    font-weight: variables.$title-large-weight;
+    letter-spacing: variables.$title-large-letter-spacing-mobile;
+  }
+  @include mixins.respond-xl {
+    font-size: variables.$title-large-size;
+    line-height: variables.$title-large-line-height;
+    font-weight: variables.$title-large-weight;
+    letter-spacing: variables.$title-large-letter-spacing;
+  }
+}
+
+.title-medium {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$title-medium-size-mobile;
+  line-height: variables.$title-medium-line-height-mobile;
+  font-weight: variables.$title-medium-weight;
+  letter-spacing: variables.$title-medium-letter-spacing-mobile;
+  @include mixins.respond-lg {
+    font-size: variables.$title-medium-size;
+    line-height: variables.$title-medium-line-height;
+    font-weight: variables.$title-medium-weight;
+    letter-spacing: variables.$title-medium-letter-spacing;
+  }
+}
+
+.title-small {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$title-small-size-mobile;
+  line-height: variables.$title-small-line-height-mobile;
+  font-weight: variables.$title-small-weight;
+  letter-spacing: variables.$title-small-letter-spacing-mobile;
+  @include mixins.respond-lg {
+    font-size: variables.$title-small-size;
+    line-height: variables.$title-small-line-height;
+    font-weight: variables.$title-small-weight;
+    letter-spacing: variables.$title-small-letter-spacing;
+  }
+}
+
+.title-small-alt {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$title-small-alt-size;
+  line-height: variables.$title-small-alt-line-height;
+  font-weight: variables.$title-small-alt-weight;
+  letter-spacing: variables.$title-small-alt-letter-spacing;
+}
+
+.title-small-medium {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$title-small-medium-size;
+  line-height: variables.$title-small-medium-line-height;
+  font-weight: variables.$title-small-medium-weight;
+  letter-spacing: variables.$title-small-medium-letter-spacing;
+}
+
+// Body Styles (Inter)
+.body-large {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-large-size-mobile;
+  line-height: variables.$body-large-line-height-mobile;
+  font-weight: variables.$body-large-weight;
+  letter-spacing: 0px;
+  @include mixins.respond-lg {
+    font-size: variables.$body-large-size;
+    line-height: variables.$body-large-line-height;
+    font-weight: variables.$body-large-weight;
+  }
+}
+
+.body-large-alt {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-large-alt-size;
+  line-height: variables.$body-large-alt-line-height;
+  font-weight: variables.$body-large-alt-weight;
+}
+
+.body-large-strong {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-large-strong-size-mobile;
+  line-height: variables.$body-large-strong-line-height-mobile;
+  letter-spacing: 0px;
+  font-weight: variables.$body-large-strong-weight;
+  @include mixins.respond-lg {
+    font-size: variables.$body-large-strong-size;
+    line-height: variables.$body-large-strong-line-height;
+    font-weight: variables.$body-large-strong-weight;
+  }
+}
+
+.body-large-strong-alt {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-large-strong-alt-size;
+  line-height: variables.$body-large-strong-alt-line-height;
+  font-weight: variables.$body-large-strong-alt-weight;
+}
+
+.body-medium {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-medium-size;
+  line-height: variables.$body-medium-line-height;
+  font-weight: variables.$body-medium-weight;
+}
+
+.body-medium-strong {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-medium-strong-size;
+  line-height: variables.$body-medium-strong-line-height;
+  font-weight: variables.$body-medium-strong-weight;
+}
+
+.body-small {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-small-size;
+  line-height: variables.$body-small-line-height;
+  font-weight: variables.$body-small-weight;
+}
+
+.body-small-strong {
+  font-family: variables.$font-family-inter;
+  font-size: variables.$body-small-strong-size;
+  line-height: variables.$body-small-strong-line-height;
+  font-weight: variables.$body-small-strong-weight;
+}
+
+// Special Styles (Albert Sans)
+.button-text {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$button-size;
+  line-height: variables.$button-line-height;
+  font-weight: variables.$button-weight;
+  letter-spacing: variables.$button-letter-spacing;
+  text-transform: uppercase;
+}
+
+.menu-text {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$menu-size;
+  line-height: variables.$menu-line-height;
+  font-weight: variables.$menu-weight;
+}
+
+.overline-text {
+  font-family: variables.$font-family-albert-sans;
+  font-size: variables.$overline-size;
+  line-height: variables.$overline-line-height;
+  font-weight: variables.$overline-weight;
+  letter-spacing: variables.$overline-letter-spacing;
+  text-transform: uppercase;
+}
+
+// Headings (mapped to title styles)
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: variables.$font-family-albert-sans;
+  font-weight: variables.$font-weight-semibold;
+  line-height: 1.2;
+  margin-bottom: variables.$spacing-2;
+  color: variables.$color-gray-900;
+}
+
+h1 {
+  font-size: variables.$title-large-size;
+  line-height: variables.$title-large-line-height;
+  font-weight: variables.$title-large-weight;
+  letter-spacing: variables.$title-large-letter-spacing;
+}
+
+h2 {
+  font-size: variables.$title-medium-size;
+  line-height: variables.$title-medium-line-height;
+  font-weight: variables.$title-medium-weight;
+  letter-spacing: variables.$title-medium-letter-spacing;
+}
+
+h3 {
+  font-size: variables.$title-small-size;
+  line-height: variables.$title-small-line-height;
+  font-weight: variables.$title-small-weight;
+  letter-spacing: variables.$title-small-letter-spacing;
+}
+
+h4 {
+  font-size: variables.$title-small-alt-size;
+  line-height: variables.$title-small-alt-line-height;
+  font-weight: variables.$title-small-alt-weight;
+  letter-spacing: variables.$title-small-alt-letter-spacing;
+}
+
+h5 {
+  font-size: variables.$body-large-size;
+  line-height: variables.$body-large-line-height;
+  font-weight: variables.$body-large-strong-weight;
+}
+
+h6 {
+  font-size: variables.$body-medium-size;
+  line-height: variables.$body-medium-line-height;
+  font-weight: variables.$body-medium-strong-weight;
+}
+
+// Paragraphs
+p {
+  margin-bottom: variables.$spacing-4;
+  line-height: 1.7;
+}
+
+// Links
+a {
+  color: variables.$color-primary;
+  @include mixins.hover-transition(color);
+
+  &:hover {
+    color: color.adjust(variables.$color-primary, $lightness: -10%);
+  }
+}
+
+// Lists
+ul,
+ol {
+  margin-bottom: variables.$spacing-4;
+
+  li {
+    margin-bottom: variables.$spacing-1;
+  }
+}
+
+// Emphasis
+strong,
+b {
+  font-weight: variables.$font-weight-semibold;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+// Code
+code {
+  font-family: monospace;
+  font-size: 0.875em;
+  background-color: variables.$color-gray-100;
+  padding: variables.$spacing-1 variables.$spacing-2;
+  border-radius: variables.$border-radius-sm;
+}

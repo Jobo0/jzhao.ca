@@ -1,0 +1,12 @@
+// Import fonts first
+@use "fonts";
+
+// Import variables and mixins first (no CSS output)
+@use "variables";
+@use "mixins";
+
+// Base styles (CSS reset and typography)
+@use "reset";
+@use "typography";
+
+@use "globals";

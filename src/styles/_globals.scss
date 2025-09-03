@@ -1,0 +1,50 @@
+@use "variables" as v;
+
+// CSS Custom Properties (accessible from JavaScript)
+// Define these on :root so they can be accessed from JS
+:root {
+  // Primary (Purple)
+  --color-primary-dark: #{v.$color-primary-dark};
+  --color-primary: #{v.$color-primary};
+  --color-primary-light: #{v.$color-primary-light};
+
+  // Secondary (Orange)
+  --color-secondary-dark: #{v.$color-secondary-dark};
+  --color-secondary: #{v.$color-secondary};
+  --color-secondary-light: #{v.$color-secondary-light};
+
+  // Success (Green)
+  --color-success-dark: #{v.$color-success-dark};
+  --color-success: #{v.$color-success};
+  --color-success-light: #{v.$color-success-light};
+
+  // Error (Red)
+  --color-error-dark: #{v.$color-error-dark};
+  --color-error: #{v.$color-error};
+  --color-error-light: #{v.$color-error-light};
+
+  // Neutrals
+  --color-black: #{v.$color-black};
+  --color-gray-900: #{v.$color-gray-900};
+  --color-gray-700: #{v.$color-gray-700};
+  --color-gray-300: #{v.$color-gray-300};
+  --color-gray-100: #{v.$color-gray-100};
+  --color-white: #{v.$color-white};
+
+  // Shades
+  --color-shade-dark-90: #{v.$color-shade-dark-90};
+  --color-shade-dark-70: #{v.$color-shade-dark-70};
+  --color-shade-dark-50: #{v.$color-shade-dark-50};
+  --color-shade-dark-30: #{v.$color-shade-dark-30};
+  --color-shade-dark-10: #{v.$color-shade-dark-10};
+
+  // Tints
+  --color-tint-light-90: #{v.$color-tint-light-90};
+  --color-tint-light-70: #{v.$color-tint-light-70};
+  --color-tint-light-50: #{v.$color-tint-light-50};
+  --color-tint-light-30: #{v.$color-tint-light-30};
+  --color-tint-light-10: #{v.$color-tint-light-10};
+
+  // Backgrounds
+  --color-background-beige: #{v.$color-background-beige};
+}
