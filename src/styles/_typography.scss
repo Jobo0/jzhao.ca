@@ -8,15 +8,15 @@ html {
 }
 
 body {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-weight: variables.$font-weight-normal;
   line-height: 1.6;
-  color: variables.$color-gray-900;
+  color: variables.$color-text;
 }
 
-// Title Styles (Albert Sans)
+// Title Styles (Sans)
 .title-large {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$title-large-size-mobile;
   line-height: variables.$title-large-line-height-mobile;
   font-weight: variables.$title-large-weight;
@@ -36,7 +36,7 @@ body {
 }
 
 .title-medium {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$title-medium-size-mobile;
   line-height: variables.$title-medium-line-height-mobile;
   font-weight: variables.$title-medium-weight;
@@ -50,7 +50,7 @@ body {
 }
 
 .title-small {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$title-small-size-mobile;
   line-height: variables.$title-small-line-height-mobile;
   font-weight: variables.$title-small-weight;
@@ -64,7 +64,7 @@ body {
 }
 
 .title-small-alt {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$title-small-alt-size;
   line-height: variables.$title-small-alt-line-height;
   font-weight: variables.$title-small-alt-weight;
@@ -72,16 +72,16 @@ body {
 }
 
 .title-small-medium {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$title-small-medium-size;
   line-height: variables.$title-small-medium-line-height;
   font-weight: variables.$title-small-medium-weight;
   letter-spacing: variables.$title-small-medium-letter-spacing;
 }
 
-// Body Styles (Inter)
+// Body Styles (Mono)
 .body-large {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-large-size-mobile;
   line-height: variables.$body-large-line-height-mobile;
   font-weight: variables.$body-large-weight;
@@ -94,14 +94,14 @@ body {
 }
 
 .body-large-alt {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-large-alt-size;
   line-height: variables.$body-large-alt-line-height;
   font-weight: variables.$body-large-alt-weight;
 }
 
 .body-large-strong {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-large-strong-size-mobile;
   line-height: variables.$body-large-strong-line-height-mobile;
   letter-spacing: 0px;
@@ -114,43 +114,43 @@ body {
 }
 
 .body-large-strong-alt {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-large-strong-alt-size;
   line-height: variables.$body-large-strong-alt-line-height;
   font-weight: variables.$body-large-strong-alt-weight;
 }
 
 .body-medium {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-medium-size;
   line-height: variables.$body-medium-line-height;
   font-weight: variables.$body-medium-weight;
 }
 
 .body-medium-strong {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-medium-strong-size;
   line-height: variables.$body-medium-strong-line-height;
   font-weight: variables.$body-medium-strong-weight;
 }
 
 .body-small {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-small-size;
   line-height: variables.$body-small-line-height;
   font-weight: variables.$body-small-weight;
 }
 
 .body-small-strong {
-  font-family: variables.$font-family-inter;
+  font-family: variables.$font-family-mono;
   font-size: variables.$body-small-strong-size;
   line-height: variables.$body-small-strong-line-height;
   font-weight: variables.$body-small-strong-weight;
 }
 
-// Special Styles (Albert Sans)
+// Special Styles (Sans)
 .button-text {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$button-size;
   line-height: variables.$button-line-height;
   font-weight: variables.$button-weight;
@@ -159,14 +159,14 @@ body {
 }
 
 .menu-text {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$menu-size;
   line-height: variables.$menu-line-height;
   font-weight: variables.$menu-weight;
 }
 
 .overline-text {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-size: variables.$overline-size;
   line-height: variables.$overline-line-height;
   font-weight: variables.$overline-weight;
@@ -181,11 +181,11 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: variables.$font-family-albert-sans;
+  font-family: variables.$font-family-mono;
   font-weight: variables.$font-weight-semibold;
   line-height: 1.2;
   margin-bottom: variables.$spacing-2;
-  color: variables.$color-gray-900;
+  color: variables.$color-text;
 }
 
 h1 {
@@ -236,11 +236,11 @@ p {
 
 // Links
 a {
-  color: variables.$color-primary;
+  color: variables.$color-link;
   @include mixins.hover-transition(color);
 
   &:hover {
-    color: color.adjust(variables.$color-primary, $lightness: -10%);
+    color: variables.$color-link-700;
   }
 }
 
@@ -269,7 +269,7 @@ i {
 code {
   font-family: monospace;
   font-size: 0.875em;
-  background-color: variables.$color-gray-100;
+  background-color: variables.$color-code;
   padding: variables.$spacing-1 variables.$spacing-2;
   border-radius: variables.$border-radius-sm;
 }

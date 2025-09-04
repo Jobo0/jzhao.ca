@@ -26,9 +26,9 @@ body {
 body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  color: variables.$color-gray-900;
+  color: variables.$color-text;
   position: relative; // Needed for pseudo-element positioning
-  background-color: variables.$color-primary;
+  background-color: variables.$color-background;
 }
 
 img,

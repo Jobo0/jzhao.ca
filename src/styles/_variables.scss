@@ -1,55 +1,74 @@
-// Colors
+// Colors — Slate Rose Theme (dark)
 
-// Primary (Purple)
-$color-primary-dark: #140066;
-$color-primary: #4422cc;
-$color-primary-light: #7a59ff;
+// Core tokens
+$color-bg-950: #0E0D10;  // page bg
+$color-bg-900: #16151A;  // panels/surfaces
+$color-surface-800: #1B1A20; // code blocks / raised
+$color-text-100: #ECE9F1; // primary text
+$color-text-300: #A59EB0; // subtle text
+$color-border-700: #26232C; // dividers
 
-// Secondary (Orange)
-$color-secondary-dark: #cc5214;
-$color-secondary: #ff7733;
-$color-secondary-light: #ffaa80;
+// Brand & interactive
+$color-brand-600: #C26D8E; // primary accent (rose, muted)
+$color-brand-700: #8E4D67; // hover/active
+$color-brand-400: #E0A7BD; // outlines, soft fills
 
-// Success (Green)
-$color-success-dark: #077a07;
-$color-success: #21a321;
-$color-success-light: #daf7da;
+$color-link-600: #A78BFA;  // secondary accent (violet)
+$color-link-700: #7C6CE0;  // hover
 
-// Error (Red)
-$color-error-dark: #b31f12;
-$color-error: #e63d2e;
-$color-error-light: #ffe3e0;
+// States
+$color-success-600: #2CB67D;
+$color-success-700: #1F8A5E;
+$color-success-100: #CFF5E6;
 
-// Neutrals
-$color-black: #12121a;
-$color-gray-900: #464659;
-$color-gray-700: #77778c;
-$color-gray-300: #b0b0bf;
-$color-gray-100: #ededf2;
-$color-white: #ffffff;
+$color-error-600:  #E2546B;
+$color-error-700:  #A63B4B;
+$color-error-100:  #FFD7DE;
 
-// Shades
-$color-shade-dark-90: rgba(13, 13, 26, 0.9);
-$color-shade-dark-70: rgba(13, 13, 26, 0.7);
-$color-shade-dark-50: rgba(13, 13, 26, 0.5);
-$color-shade-dark-30: rgba(13, 13, 26, 0.3);
-$color-shade-dark-10: rgba(13, 13, 26, 0.1);
+// Neutrals (compat scale)
+$color-neutral-1000: #0B0B0E;
+$color-neutral-950:  #0E0D10;
+$color-neutral-900:  #16151A;
+$color-neutral-800:  #1B1A20;
+$color-neutral-700:  #26232C;
+$color-neutral-500:  #3A3942;
+$color-neutral-400:  #6D6878;
+$color-neutral-300:  #A59EB0;
+$color-neutral-100:  #ECE9F1;
+$color-neutral-000:  #FFFFFF;
 
-// Tints
+// Utility surfaces
+$color-code-bg: #1B1A20;
+$color-surface-tint: #1A1519; // rose-tinted bg for callouts
+
+// Overlays (shades/tints)
+$color-shade-dark-90: rgba(14, 13, 16, 0.9);
+$color-shade-dark-70: rgba(14, 13, 16, 0.7);
+$color-shade-dark-50: rgba(14, 13, 16, 0.5);
+$color-shade-dark-30: rgba(14, 13, 16, 0.3);
+$color-shade-dark-10: rgba(14, 13, 16, 0.1);
+
 $color-tint-light-90: rgba(255, 255, 255, 0.9);
 $color-tint-light-70: rgba(255, 255, 255, 0.7);
 $color-tint-light-50: rgba(255, 255, 255, 0.5);
 $color-tint-light-30: rgba(255, 255, 255, 0.3);
 $color-tint-light-10: rgba(255, 255, 255, 0.1);
 
-// Backgrounds
-$color-background-beige: #ffecd9;
+// Extra exports for convenience
+$color-background: $color-bg-950;
+$color-panel:      $color-bg-900;
+$color-text:       $color-text-100;
+$color-text-muted: $color-text-300;
+$color-border:     $color-border-700;
+$color-link:       $color-link-600;
+$color-accent:     $color-brand-600;
+$color-code:       $color-code-bg;
 
 // Typography
 
 // Font Families
-$font-family-albert-sans:
-  "Albert Sans",
+$font-family-sans:
+  "IBM Plex Sans",
   -apple-system,
   BlinkMacSystemFont,
   "Segoe UI",
@@ -59,17 +78,16 @@ $font-family-albert-sans:
   Cantarell,
   "Helvetica Neue",
   sans-serif;
-$font-family-inter:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "Segoe UI",
-  Roboto,
-  Oxygen,
-  Ubuntu,
-  Cantarell,
-  "Helvetica Neue",
-  sans-serif;
+$font-family-mono:
+  "JetBrains Mono",
+  ui-monospace,
+  SFMono-Regular,
+  Menlo,
+  Monaco,
+  Consolas,
+  "Liberation Mono",
+  "Courier New",
+  monospace;
 
 // Font Weights
 $font-weight-normal: 400;
@@ -77,7 +95,7 @@ $font-weight-medium: 500;
 $font-weight-semibold: 600;
 $font-weight-bold: 700;
 
-// Title Styles (Albert Sans)
+// Title Styles (Sans)
 $title-large-size: 6rem; // 96px
 $title-large-line-height: 6rem; // 96px
 $title-large-letter-spacing: -3px;
@@ -103,7 +121,7 @@ $title-small-medium-line-height: 3rem; // 48px
 $title-small-medium-letter-spacing: -1.25px;
 $title-small-medium-weight: $font-weight-medium;
 
-// Mobile Title Styles (Albert Sans)
+// Mobile Title Styles (Sans)
 $title-large-size-mobile: 3rem; // 48px
 $title-large-line-height-mobile: 3.5rem; // 56px
 $title-large-letter-spacing-mobile: -1.5px;
@@ -118,7 +136,7 @@ $title-small-size-mobile: 2rem; // 32px
 $title-small-line-height-mobile: 2.5rem; // 40px
 $title-small-letter-spacing-mobile: -1px;
 
-// Body Styles (Inter)
+// Body Styles (Mono)
 $body-large-size: 1.5rem; // 24px
 $body-large-line-height: 2rem; // 32px
 $body-large-weight: $font-weight-normal;
@@ -151,14 +169,14 @@ $body-small-strong-size: 0.875rem; // 14px
 $body-small-strong-line-height: 1.25rem; // 20px
 $body-small-strong-weight: $font-weight-medium;
 
-// Mobile Body Styles (Inter)
+// Mobile Body Styles (Mono)
 $body-large-size-mobile: 1.25rem; // 20px
 $body-large-line-height-mobile: 1.75rem; // 28px
 
 $body-large-strong-size-mobile: 1.25rem; // 20px
 $body-large-strong-line-height-mobile: 1.75rem; // 28px
 
-// Special Styles (Albert Sans)
+// Special Styles (Sans)
 $button-size: 1rem; // 16px
 $button-line-height: 1.5rem; // 24px
 $button-letter-spacing: 1px;

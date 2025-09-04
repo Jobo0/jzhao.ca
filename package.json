@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@builder.io/react": "^8.2.7",
+    "@fontsource/ibm-plex-sans": "^5.2.6",
+    "@fontsource/jetbrains-mono": "^5.2.6",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"

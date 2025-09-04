@@ -3,48 +3,64 @@
 // CSS Custom Properties (accessible from JavaScript)
 // Define these on :root so they can be accessed from JS
 :root {
-  // Primary (Purple)
-  --color-primary-dark: #{v.$color-primary-dark};
-  --color-primary: #{v.$color-primary};
-  --color-primary-light: #{v.$color-primary-light};
+  // Core tokens
+  --color-bg-950: #{v.$color-bg-950};
+  --color-bg-900: #{v.$color-bg-900};
+  --color-surface-800: #{v.$color-surface-800};
+  --color-text-100: #{v.$color-text-100};
+  --color-text-300: #{v.$color-text-300};
+  --color-border-700: #{v.$color-border-700};
 
-  // Secondary (Orange)
-  --color-secondary-dark: #{v.$color-secondary-dark};
-  --color-secondary: #{v.$color-secondary};
-  --color-secondary-light: #{v.$color-secondary-light};
+  // Brand & interactive
+  --color-brand-600: #{v.$color-brand-600};
+  --color-brand-700: #{v.$color-brand-700};
+  --color-brand-400: #{v.$color-brand-400};
+  --color-link-600: #{v.$color-link-600};
+  --color-link-700: #{v.$color-link-700};
 
-  // Success (Green)
-  --color-success-dark: #{v.$color-success-dark};
-  --color-success: #{v.$color-success};
-  --color-success-light: #{v.$color-success-light};
-
-  // Error (Red)
-  --color-error-dark: #{v.$color-error-dark};
-  --color-error: #{v.$color-error};
-  --color-error-light: #{v.$color-error-light};
+  // States
+  --color-success-600: #{v.$color-success-600};
+  --color-success-700: #{v.$color-success-700};
+  --color-success-100: #{v.$color-success-100};
+  --color-error-600: #{v.$color-error-600};
+  --color-error-700: #{v.$color-error-700};
+  --color-error-100: #{v.$color-error-100};
 
   // Neutrals
-  --color-black: #{v.$color-black};
-  --color-gray-900: #{v.$color-gray-900};
-  --color-gray-700: #{v.$color-gray-700};
-  --color-gray-300: #{v.$color-gray-300};
-  --color-gray-100: #{v.$color-gray-100};
-  --color-white: #{v.$color-white};
+  --color-neutral-1000: #{v.$color-neutral-1000};
+  --color-neutral-950: #{v.$color-neutral-950};
+  --color-neutral-900: #{v.$color-neutral-900};
+  --color-neutral-800: #{v.$color-neutral-800};
+  --color-neutral-700: #{v.$color-neutral-700};
+  --color-neutral-500: #{v.$color-neutral-500};
+  --color-neutral-400: #{v.$color-neutral-400};
+  --color-neutral-300: #{v.$color-neutral-300};
+  --color-neutral-100: #{v.$color-neutral-100};
+  --color-neutral-000: #{v.$color-neutral-000};
 
-  // Shades
+  // Utility surfaces
+  --color-code-bg: #{v.$color-code-bg};
+  --color-surface-tint: #{v.$color-surface-tint};
+
+  // Overlays (shades/tints)
   --color-shade-dark-90: #{v.$color-shade-dark-90};
   --color-shade-dark-70: #{v.$color-shade-dark-70};
   --color-shade-dark-50: #{v.$color-shade-dark-50};
   --color-shade-dark-30: #{v.$color-shade-dark-30};
   --color-shade-dark-10: #{v.$color-shade-dark-10};
-
-  // Tints
   --color-tint-light-90: #{v.$color-tint-light-90};
   --color-tint-light-70: #{v.$color-tint-light-70};
   --color-tint-light-50: #{v.$color-tint-light-50};
   --color-tint-light-30: #{v.$color-tint-light-30};
   --color-tint-light-10: #{v.$color-tint-light-10};
 
-  // Backgrounds
-  --color-background-beige: #{v.$color-background-beige};
+  // Convenience
+  --color-background: #{v.$color-background};
+  --color-panel: #{v.$color-panel};
+  --color-text: #{v.$color-text};
+  --color-text-muted: #{v.$color-text-muted};
+  --color-border: #{v.$color-border};
+  --color-link: #{v.$color-link};
+  --color-accent: #{v.$color-accent};
+  --color-code: #{v.$color-code};
 }

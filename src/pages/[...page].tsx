@@ -1,11 +1,11 @@
 // pages/[...page].tsx
 import React from "react";
-import { useRouter } from "next/router";
 import { BuilderComponent, builder, useIsPreviewing } from "@builder.io/react";
 import { BuilderContent } from "@builder.io/sdk";
 import DefaultErrorPage from "next/error";
-import Head from "next/head";
+import SeoHead from "@/components/SeoHead/SeoHead";
 import { GetStaticProps } from "next";
+import "@/builder-registry.ts"
 
 // Replace with your Public API Key
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY || "");
@@ -51,7 +51,6 @@ export async function getStaticPaths() {
 
 // Define the Page component
 export default function Page({ page }: { page: BuilderContent | null }) {
-  useRouter();
   const isPreviewing = useIsPreviewing();
 
   // If the page content is not available
@@ -64,9 +63,7 @@ export default function Page({ page }: { page: BuilderContent | null }) {
   // the BuilderComponent with the page content
   return (
     <>
-      <Head>
-        <title>{page?.data?.title}</title>
-      </Head>
+      <SeoHead title={page?.data?.title} description={page?.data?.description} urlPath={page?.data?.url} />
       {/* Render the Builder page */}
       <BuilderComponent model="page" content={page || undefined} />
     </>

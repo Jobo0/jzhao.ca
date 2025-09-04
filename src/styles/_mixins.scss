@@ -161,9 +161,9 @@
     top: calc(18.6vw);
     background: linear-gradient(
       180deg,
-      rgba(variables.$color-primary, 0) 0%,
-      #{variables.$color-primary} 91.5%,
-      #{variables.$color-primary} 100%
+      rgba(variables.$color-accent, 0) 0%,
+      #{variables.$color-accent} 91.5%,
+      #{variables.$color-accent} 100%
     );
     z-index: -2;
     pointer-events: none;
@@ -203,9 +203,9 @@
     bottom: calc(18.6vw);
     background: linear-gradient(
       180deg,
-      rgba(variables.$color-primary, 0) 0%,
-      #{variables.$color-primary} 91.5%,
-      #{variables.$color-primary} 100%
+      rgba(variables.$color-accent, 0) 0%,
+      #{variables.$color-accent} 91.5%,
+      #{variables.$color-accent} 100%
     );
     z-index: -2;
     pointer-events: none;

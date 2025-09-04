@@ -1,0 +1,310 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  padding: variables.$spacing-8 variables.$spacing-4;
+  max-width: variables.$breakpoint-xl;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  margin-bottom: variables.$spacing-8;
+}
+
+.section {
+  margin-bottom: variables.$spacing-16;
+}
+
+.sectionTitle {
+  margin-bottom: variables.$spacing-4;
+}
+
+.uiGroup {
+  display: grid;
+  gap: variables.$spacing-3;
+  margin-bottom: variables.$spacing-6;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$spacing-3;
+}
+
+.rowGrid {
+  display: grid;
+  gap: variables.$spacing-4;
+  grid-template-columns: 1fr;
+  @include mixins.respond-md {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rowColumn {
+  display: grid;
+  gap: variables.$spacing-3;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: variables.$spacing-2;
+  padding: 0.5rem 0.75rem;
+  border-radius: variables.$border-radius;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$menu-size;
+  line-height: variables.$menu-line-height;
+  font-weight: variables.$menu-weight;
+  border: 1px solid variables.$color-border;
+  color: variables.$color-text;
+  background: variables.$color-panel;
+  cursor: pointer;
+}
+
+.btnPrimary {
+  background: variables.$color-brand-600;
+  border-color: variables.$color-brand-700;
+  color: variables.$color-neutral-1000;
+}
+
+.btnSecondary {
+  background: variables.$color-link-600;
+  border-color: variables.$color-link-700;
+  color: variables.$color-neutral-1000;
+}
+
+.btnGhost {
+  background: transparent;
+  border-color: variables.$color-border;
+  color: variables.$color-text;
+}
+
+.btnDestructive {
+  background: variables.$color-error-600;
+  border-color: variables.$color-error-700;
+  color: variables.$color-neutral-1000;
+}
+
+.linkDemo {
+  color: variables.$color-link-600;
+  text-decoration: underline;
+}
+
+.input {
+  appearance: none;
+  border: 1px solid variables.$color-border;
+  background: variables.$color-panel;
+  color: variables.$color-text;
+  border-radius: variables.$border-radius;
+  padding: 0.5rem 0.75rem;
+  font-family: variables.$font-family-mono;
+}
+
+.inputInvalid {
+  border-color: variables.$color-error-600;
+}
+
+.textarea {
+  @extend .input;
+  width: 100%;
+}
+
+.codeBlock {
+  background: variables.$color-code;
+  color: variables.$color-text;
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius;
+  padding: variables.$spacing-4;
+  overflow-x: auto;
+}
+
+.listDemo {
+  padding-left: variables.$spacing-6;
+}
+
+.tableDemo {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid variables.$color-border;
+}
+
+.tableDemo th,
+.tableDemo td {
+  text-align: left;
+  padding: variables.$spacing-3;
+  border-bottom: 1px solid variables.$color-border;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-2;
+  padding: 0.125rem 0.5rem;
+  border-radius: variables.$border-radius-sm;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$body-small-size;
+}
+
+.badgeSuccess {
+  background: variables.$color-success-100;
+  color: variables.$color-success-700;
+}
+
+.badgeNeutral {
+  background: variables.$color-neutral-800;
+  color: variables.$color-neutral-100;
+}
+
+.callout {
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius;
+  padding: variables.$spacing-4;
+}
+
+.calloutInfo {
+  background: variables.$color-surface-tint;
+}
+
+.calloutSuccess {
+  background: rgba(variables.$color-success-600, 0.12);
+}
+
+.calloutError {
+  background: rgba(variables.$color-error-600, 0.12);
+}
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: variables.$spacing-4;
+  @include mixins.respond-md {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.swatch {
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius;
+  background: variables.$color-panel;
+  overflow: hidden;
+}
+
+.swatchColor {
+  height: 72px;
+}
+
+.swatchLabel {
+  padding: variables.$spacing-2 variables.$spacing-3;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$body-small-size;
+  color: variables.$color-text;
+}
+
+// Color tokens
+.colorBrand700 { background: variables.$color-brand-700; }
+.colorBrand600 { background: variables.$color-brand-600; }
+.colorBrand400 { background: variables.$color-brand-400; }
+
+.colorLink700 { background: variables.$color-link-700; }
+.colorLink600 { background: variables.$color-link-600; }
+
+.colorSuccess700 { background: variables.$color-success-700; }
+.colorSuccess600 { background: variables.$color-success-600; }
+.colorSuccess100 { background: variables.$color-success-100; }
+
+.colorError700 { background: variables.$color-error-700; }
+.colorError600 { background: variables.$color-error-600; }
+.colorError100 { background: variables.$color-error-100; }
+
+.colorNeutral1000 { background: variables.$color-neutral-1000; }
+.colorNeutral950 { background: variables.$color-neutral-950; }
+.colorNeutral900 { background: variables.$color-neutral-900; }
+.colorNeutral800 { background: variables.$color-neutral-800; }
+.colorNeutral700 { background: variables.$color-neutral-700; }
+.colorNeutral500 { background: variables.$color-neutral-500; }
+.colorNeutral400 { background: variables.$color-neutral-400; }
+.colorNeutral300 { background: variables.$color-neutral-300; }
+.colorNeutral100 { background: variables.$color-neutral-100; }
+.colorNeutral000 { background: variables.$color-neutral-000; }
+
+.tint90 { background: variables.$color-tint-light-90; }
+.tint70 { background: variables.$color-tint-light-70; }
+.tint50 { background: variables.$color-tint-light-50; }
+.tint30 { background: variables.$color-tint-light-30; }
+.tint10 { background: variables.$color-tint-light-10; }
+
+.shade90 { background: variables.$color-shade-dark-90; }
+.shade70 { background: variables.$color-shade-dark-70; }
+.shade50 { background: variables.$color-shade-dark-50; }
+.shade30 { background: variables.$color-shade-dark-30; }
+.shade10 { background: variables.$color-shade-dark-10; }
+
+.bgCallout { background: variables.$color-surface-tint; }
+
+.typeGroup {
+  display: grid;
+  gap: variables.$spacing-2;
+  padding: variables.$spacing-3;
+  border: 1px dashed variables.$color-border;
+  border-radius: variables.$border-radius;
+  background: variables.$color-panel;
+  margin-bottom: variables.$spacing-4;
+}
+
+.spacingList {
+  display: grid;
+  gap: variables.$spacing-3;
+}
+
+.spaceItem {
+  display: flex;
+  align-items: center;
+  gap: variables.$spacing-3;
+}
+
+.spaceToken {
+  width: 100px;
+  background: variables.$color-neutral-700;
+}
+
+.space1 { height: variables.$spacing-1; }
+.space2 { height: variables.$spacing-2; }
+.space3 { height: variables.$spacing-3; }
+.space4 { height: variables.$spacing-4; }
+.space6 { height: variables.$spacing-6; }
+.space8 { height: variables.$spacing-8; }
+.space16 { height: variables.$spacing-16; }
+
+.spaceLabel {
+  font-family: variables.$font-family-mono;
+  font-size: variables.$body-small-size;
+  color: variables.$color-text-muted;
+}
+
+.tokensRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: variables.$spacing-4;
+}
+
+.boxToken {
+  height: 88px;
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius;
+  background: variables.$color-panel;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: variables.$font-family-mono;
+  color: variables.$color-text;
+}
+
+.radiusSm { border-radius: variables.$border-radius-sm; }
+.radius { border-radius: variables.$border-radius; }
+.radiusLg { border-radius: variables.$border-radius-lg; }
+
+.shadowSm { box-shadow: variables.$shadow-sm; }
+.shadow { box-shadow: variables.$shadow; }
+.shadowLg { box-shadow: variables.$shadow-lg; }
+
+
