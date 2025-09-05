@@ -9,7 +9,7 @@ type HeaderProps = {
 };
 
 export default function Header({
-  title = "JZ",
+  title = "jzhao.ca",
   links = [
     { label: "Home", href: "/" },
     { label: "Writing", href: "/writing" },

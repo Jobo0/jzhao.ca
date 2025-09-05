@@ -5,8 +5,7 @@
   position: sticky;
   top: 0;
   z-index: variables.$z-sticky;
-  backdrop-filter: saturate(150%) blur(8px);
-  background: variables.$color-tint-light-70;
+  background: variables.$color-neutral-900;
   border-bottom: 1px solid variables.$color-border;
 }
 

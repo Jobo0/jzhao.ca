@@ -1,0 +1,93 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  min-height: calc(100vh - 120px);
+  display: grid;
+  place-items: center;
+  position: relative;
+  padding: variables.$spacing-8 variables.$spacing-4;
+  overflow: hidden;
+}
+
+.wrapper {
+  display: grid;
+  gap: variables.$spacing-4;
+  max-width: 820px;
+  text-align: center;
+}
+
+.badgeRow {
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-2;
+  padding: 0.25rem 0.5rem;
+  border-radius: variables.$border-radius;
+  background: variables.$color-surface-tint;
+  border: 1px solid variables.$color-border;
+}
+
+.badgeIcon {
+  width: 16px;
+  height: 16px;
+  color: variables.$color-brand-600;
+}
+
+.badgeText {
+  color: variables.$color-text;
+}
+
+.title {
+  color: variables.$color-text;
+}
+
+.subtitle {
+  color: variables.$color-text-muted;
+}
+
+.sparkle {
+  width: 28px;
+  height: 28px;
+  margin-left: variables.$spacing-2;
+  color: variables.$color-link-600;
+  animation: float 3s ease-in-out infinite;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: variables.$spacing-4;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-2;
+  padding: 0.375rem 0.625rem;
+  border: 1px dashed variables.$color-border;
+  border-radius: variables.$border-radius;
+  background: variables.$color-panel;
+}
+
+.scaffold {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  opacity: 0.25;
+}
+
+.scaffoldBeam {
+  border-top: 1px dashed variables.$color-border;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+

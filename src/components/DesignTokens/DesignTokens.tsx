@@ -134,7 +134,7 @@ export default function DesignTokens() {
           <div className="overline-text">Code block</div>
           <pre className={styles.codeBlock}><code>{`// example
 function greet(name: string) {
-  return \`Hello, ${name}!\`;
+  return \`Hello!\`;
 }`}</code></pre>
         </div>
 
