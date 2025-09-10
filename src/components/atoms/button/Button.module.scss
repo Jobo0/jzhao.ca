@@ -1,0 +1,56 @@
+@use "../../../styles/variables" as variables;
+@use "../../../styles/mixins" as mixins;
+
+.button {
+  @include mixins.button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-2;
+  padding: 0.5rem 0.75rem;
+  border-radius: variables.$border-radius;
+  border: 1px solid variables.$color-border;
+  background: variables.$color-panel;
+  color: variables.$color-text;
+  text-decoration: none;
+  @include mixins.hover-transition(border-color, box-shadow);
+
+  &:hover {
+    border-color: variables.$color-brand-400;
+    box-shadow: variables.$shadow-sm;
+  }
+}
+
+.primary {
+  background: variables.$color-accent;
+  color: variables.$color-neutral-000;
+
+  &:hover {
+    background: variables.$color-brand-700;
+    border-color: variables.$color-brand-700;
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: variables.$color-text;
+  border-color: variables.$color-border;
+
+  &:hover { border-color: variables.$color-brand-400; }
+}
+
+.linkStyle {
+  background: transparent;
+  border-color: transparent;
+  color: variables.$color-link;
+  padding: 0;
+
+  &:hover { color: variables.$color-link-700; }
+}
+
+.small { padding: 0.25rem 0.5rem; }
+.medium { padding: 0.5rem 0.75rem; }
+.large { padding: 0.75rem 1rem; }
+
+.fullWidth { width: 100%; justify-content: center; }
+
+

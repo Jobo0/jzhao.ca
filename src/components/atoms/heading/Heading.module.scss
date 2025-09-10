@@ -1,0 +1,11 @@
+@use "../../../styles/variables" as variables;
+
+.root { color: variables.$color-text; }
+
+.alignLeft { text-align: left; }
+.alignCenter { text-align: center; }
+.alignRight { text-align: right; }
+
+.muted { color: variables.$color-text-muted; }
+
+

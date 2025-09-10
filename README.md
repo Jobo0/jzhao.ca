@@ -38,3 +38,39 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+
+## Atoms
+
+Import from the barrel:
+
+```tsx
+import {
+  Heading,
+  Text,
+  Button,
+  Anchor,
+  Divider,
+  Badge,
+  Overline,
+  Avatar,
+} from "@/components/atoms";
+```
+
+Examples:
+
+```tsx
+<Heading level={2}>Projects</Heading>
+<Text size="large" muted>Selected work and case studies.</Text>
+
+<Badge tone="accent" variant="soft">TypeScript</Badge>
+<Badge tone="success" variant="outline" size="sm">Open Source</Badge>
+
+<Overline align="center">Featured</Overline>
+
+<Avatar name="Jesse Zhao" src="/me.jpg" size="lg" />
+
+<Divider spaced />
+
+<Button variant="primary">Contact me</Button>
+<Anchor href="/about" underline>About</Anchor>
+```

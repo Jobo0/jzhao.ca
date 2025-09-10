@@ -1,0 +1,15 @@
+@use "../../../styles/variables" as variables;
+@use "../../../styles/mixins" as mixins;
+
+.link {
+  color: variables.$color-link;
+  text-decoration: none;
+  @include mixins.hover-transition(color);
+
+  &:hover { color: variables.$color-link-700; }
+}
+
+.underline { text-decoration: underline; text-underline-offset: 2px; }
+.muted { color: variables.$color-text-muted; }
+
+

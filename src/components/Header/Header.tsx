@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./Header.module.scss";
+import { Avatar } from "../atoms";
 
 type HeaderProps = {
   title?: string;
@@ -22,7 +23,7 @@ export default function Header({
     <header className={styles.header}>
       <div className={styles.container}>
         <Link href="/" className={styles.brand}>
-          <span className={styles.logo} aria-hidden="true" />
+          <Avatar name={title} size="lg" />
           <span className={styles.title}>{title}</span>
         </Link>
 

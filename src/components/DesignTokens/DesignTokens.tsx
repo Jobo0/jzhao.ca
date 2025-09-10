@@ -1,5 +1,15 @@
 import React from "react";
 import styles from "./DesignTokens.module.scss";
+import {
+  Heading,
+  Text,
+  Button,
+  Anchor,
+  Divider,
+  Badge,
+  Overline,
+  Avatar,
+} from "@/components/atoms";
 
 type SwatchProps = {
   label: string;
@@ -86,6 +96,93 @@ export default function DesignTokens() {
           <div className="button-text">Button text</div>
           <div className="menu-text">Menu text</div>
           <div className="overline-text">Overline text</div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Atoms</h2>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Heading</div>
+          <div className={styles.rowColumn}>
+            <Heading level={1}>Heading 1</Heading>
+            <Heading level={2}>Heading 2</Heading>
+            <Heading level={3}>Heading 3</Heading>
+            <Heading level={4}>Heading 4</Heading>
+            <Heading level={5}>Heading 5</Heading>
+            <Heading level={6}>Heading 6</Heading>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Text</div>
+          <div className={styles.rowColumn}>
+            <Text size="large">Body Large</Text>
+            <Text size="largeAlt">Body Large Alt</Text>
+            <Text size="largeStrong">Body Large Strong</Text>
+            <Text size="largeStrongAlt">Body Large Strong Alt</Text>
+            <Text size="medium">Body Medium</Text>
+            <Text size="mediumStrong">Body Medium Strong</Text>
+            <Text size="small">Body Small</Text>
+            <Text size="smallStrong">Body Small Strong</Text>
+            <Text muted>Muted text example</Text>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Buttons</div>
+          <div className={styles.row}>
+            <Button variant="primary">Primary</Button>
+            <Button>Default</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="link">Link style</Button>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Links</div>
+          <div className={styles.row}>
+            <Anchor href="/">Internal link</Anchor>
+            <Anchor href="/" underline>Underlined</Anchor>
+            <Anchor href="https://example.com">External link</Anchor>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Badges</div>
+          <div className={styles.row}>
+            <Badge tone="accent" variant="soft">Accent</Badge>
+            <Badge tone="success" variant="outline" size="sm">Success</Badge>
+            <Badge tone="error" variant="solid" pill>Error</Badge>
+            <Badge tone="neutral">Neutral</Badge>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Overline</div>
+          <div className={styles.rowColumn}>
+            <Overline>Featured Work</Overline>
+            <Overline muted>Muted overline</Overline>
+            <Overline align="center">Centered overline</Overline>
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Avatar</div>
+          <div className={styles.row}>
+            <Avatar name="Jesse Zhao" size="sm" />
+            <Avatar name="Jesse Zhao" size="md" />
+            <Avatar name="Jesse Zhao" size="lg" />
+            <Avatar name="Jesse Zhao" src="/favicon.ico" size="md" />
+          </div>
+        </div>
+
+        <div className={styles.uiGroup}>
+          <div className="overline-text">Divider</div>
+          <div className={styles.rowColumn}>
+            <Divider />
+            <Divider spaced />
+          </div>
         </div>
       </section>
 

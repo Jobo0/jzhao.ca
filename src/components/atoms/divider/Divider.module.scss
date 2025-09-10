@@ -1,0 +1,14 @@
+@use "../../../styles/variables" as variables;
+
+.root {
+  height: 1px;
+  width: 100%;
+  background: variables.$color-border;
+  border: 0;
+}
+
+.spaced {
+  margin: variables.$spacing-6 0;
+}
+
+

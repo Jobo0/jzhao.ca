@@ -1,0 +1,50 @@
+@use "../../../styles/variables" as variables;
+@use "../../../styles/mixins" as mixins;
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-1;
+  border-radius: variables.$border-radius;
+  border: 1px solid transparent;
+  font-family: variables.$font-family-mono;
+  font-weight: variables.$font-weight-medium;
+  line-height: 1;
+}
+
+// Sizes
+.sm { padding: 0.125rem 0.375rem; font-size: variables.$body-small-strong-size; }
+.md { padding: 0.25rem 0.5rem; font-size: variables.$body-medium-strong-size; }
+
+// Variants
+.solid {}
+.soft { border-color: transparent; }
+.outline { background: transparent; }
+
+// Tones
+.toneNeutral {}
+.toneAccent {}
+.toneSuccess {}
+.toneError {}
+
+// Solid mapping
+.solid.toneNeutral { background: variables.$color-neutral-500; color: variables.$color-neutral-000; }
+.solid.toneAccent { background: variables.$color-accent; color: variables.$color-neutral-000; }
+.solid.toneSuccess { background: variables.$color-success-600; color: variables.$color-neutral-000; }
+.solid.toneError   { background: variables.$color-error-600; color: variables.$color-neutral-000; }
+
+// Soft mapping
+.soft.toneNeutral { background: variables.$color-neutral-800; color: variables.$color-text; }
+.soft.toneAccent { background: variables.$color-brand-400; color: variables.$color-neutral-900; }
+.soft.toneSuccess { background: variables.$color-success-100; color: variables.$color-success-700; }
+.soft.toneError   { background: variables.$color-error-100; color: variables.$color-error-700; }
+
+// Outline mapping
+.outline.toneNeutral { border-color: variables.$color-neutral-500; color: variables.$color-text; }
+.outline.toneAccent  { border-color: variables.$color-accent; color: variables.$color-accent; }
+.outline.toneSuccess { border-color: variables.$color-success-600; color: variables.$color-success-600; }
+.outline.toneError   { border-color: variables.$color-error-600; color: variables.$color-error-600; }
+
+.pill { border-radius: 9999px; }
+
+
