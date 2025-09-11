@@ -12,7 +12,7 @@ type TextSize =
   | "smallStrong";
 
 type TextProps = React.PropsWithChildren<{
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
   size?: TextSize;
   muted?: boolean;
   className?: string;

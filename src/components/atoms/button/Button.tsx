@@ -39,14 +39,21 @@ export function Button({
 
   if (as === "a") {
     return (
-      <a href={href} className={classes} {...(rest as any)}>
+      <a
+        href={href}
+        className={classes}
+        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
         {children}
       </a>
     );
   }
 
   return (
-    <button className={classes} {...(rest as any)}>
+    <button
+      className={classes}
+      {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
     </button>
   );

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import styles from "./Overline.module.scss";
 
 type Props = React.PropsWithChildren<{
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
   align?: "left" | "center" | "right";
   muted?: boolean;
   className?: string;
