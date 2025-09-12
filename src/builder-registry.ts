@@ -10,6 +10,7 @@ const MaintenanceBlurb = dynamic(
   () => import("@/components/MaintenanceBlurb/MaintenanceBlurb"),
   { ssr: true }
 );
+const Hero = dynamic(() => import("@/components/Hero/Hero"), { ssr: true });
 
 Builder.registerComponent(Header, {
   name: "Header",
@@ -68,6 +69,15 @@ Builder.registerComponent(MaintenanceBlurb, {
       defaultValue:
         "We’re actively working on this section. Content and features may change while we iterate. Please check back soon.",
     },
+  ],
+});
+
+Builder.registerComponent(Hero, {
+  name: "Hero",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "Welcome" },
+    { name: "subtitle", type: "string", defaultValue: "To my website" },
+    { name: "className", type: "string", helperText: "Optional extra class name" },
   ],
 });
 
