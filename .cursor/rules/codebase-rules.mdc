@@ -1,0 +1,10 @@
+---
+description: Project Component Style Guide
+globs:
+alwaysApply: true
+---
+
+- Always create .tsx React Components when creating components.
+- Create a module.scss file to accompany each component.
+- Use variables, mixins, typography from @/styles/...
+- Use modern React syntax such as arrow functions.

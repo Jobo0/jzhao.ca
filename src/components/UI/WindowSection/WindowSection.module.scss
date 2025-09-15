@@ -1,0 +1,90 @@
+@use "../../../styles/variables" as variables;
+@use "../../../styles/mixins" as mixins;
+
+// Root wrapper spans full width and centers inner window
+.root {
+  width: 100%;
+  padding-inline: variables.$spacing-4;
+  padding-block: variables.$spacing-8;
+}
+
+// Optional max-width container utility
+.container {
+  @include mixins.container(1200px);
+}
+
+// The window/card frame
+.window {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: variables.$color-bg-900;
+  border: 1px solid variables.$color-border;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  overflow: hidden;
+  // Smooth transforms for future animations
+  transition: transform 300ms ease, width 300ms ease, height 300ms ease,
+    box-shadow 300ms ease, border-color 300ms ease;
+}
+
+// Subtle inner grain for depth
+.grain {
+  @include mixins.grain-background(0.35);
+}
+
+// Paddings (size variants)
+.paddingNone { padding: 0; }
+.paddingSm { padding: variables.$spacing-4; }
+.paddingMd { padding: variables.$spacing-6; }
+.paddingLg { padding: variables.$spacing-8; }
+
+// Radius variants to allow visual tweaks
+.radiusSm { border-radius: variables.$border-radius; }
+.radiusMd { border-radius: 16px; }
+.radiusLg { border-radius: 24px; }
+.radiusXl { border-radius: 32px; }
+
+// Surface variants
+.surfaceDefault {
+  background: variables.$color-bg-900;
+}
+
+.surfaceRaised {
+  background: variables.$color-surface-800;
+}
+
+.surfaceTinted {
+  background: variables.$color-surface-tint;
+}
+
+// Bordered vs borderless
+.withBorder { border: 1px solid variables.$color-border; }
+.noBorder { border: 0; box-shadow: none; }
+
+// Highlighted/glow state (for animation toggles)
+.highlighted {
+  border-color: variables.$color-accent;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 0 0 1px variables.$color-accent,
+    0 0 24px 2px rgba(194, 109, 142, 0.45);
+}
+
+// Alignment helpers (for content)
+.alignStart { align-items: flex-start; }
+.alignCenter { align-items: center; }
+.alignEnd { align-items: flex-end; }
+
+.contentColumn { display: flex; flex-direction: column; }
+.contentRow { display: flex; flex-direction: row; gap: variables.$spacing-6; }
+
+// Full bleed header/footer slots if needed later
+.header, .footer {
+  width: 100%;
+}
+
+.body {
+  width: 100%;
+}
+
+

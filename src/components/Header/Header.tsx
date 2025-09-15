@@ -23,7 +23,7 @@ export default function Header({
     <header className={styles.header}>
       <div className={styles.container}>
         <Link href="/" className={styles.brand}>
-          <Avatar name={title} size="lg" />
+          <Avatar name={title} size="md" />
           <span className={styles.title}>{title}</span>
         </Link>
 

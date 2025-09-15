@@ -1,0 +1,18 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.placeholder {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: variables.$spacing-4;
+}
+
+.placeholderCard {
+  height: 96px;
+  border-radius: variables.$border-radius;
+  background: variables.$color-surface-800;
+  border: 1px solid variables.$color-border;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+

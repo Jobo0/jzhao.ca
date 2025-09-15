@@ -1,0 +1,66 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  width: 100%;
+  padding-inline: variables.$spacing-4;
+  padding-block: variables.$spacing-8;
+}
+
+// Two-column responsive layout. On small screens, stack with window first by default
+.layoutRight,
+.layoutLeft {
+  @include mixins.container(1200px);
+  display: grid;
+  gap: variables.$spacing-8;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "window"
+    "side";
+
+  @include mixins.respond-md {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// Right placement on desktop: window | side
+.layoutRight {
+  @include mixins.respond-md {
+    grid-template-areas: "window side";
+  }
+}
+
+// Left placement on desktop: side | window
+.layoutLeft {
+  @include mixins.respond-md {
+    grid-template-areas: "side window";
+  }
+}
+
+.side {
+  grid-area: side;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.windowCol {
+  grid-area: window;
+  display: block;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-4;
+}
+
+.title {
+  margin: 0;
+}
+
+.description {
+  color: variables.$color-text-muted;
+}
+
+

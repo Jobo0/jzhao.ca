@@ -11,7 +11,7 @@
 
 .container {
   margin: 0 auto;
-  padding: variables.$spacing-4;
+  padding: variables.$spacing-3 variables.$spacing-4; // reduce vertical padding
   max-width: variables.$breakpoint-xl;
   display: flex;
   align-items: center;
@@ -40,8 +40,8 @@
 .title {
   font-family: variables.$font-family-mono;
   font-weight: variables.$font-weight-semibold;
-  font-size: variables.$body-large-alt-size;
-  line-height: variables.$body-large-alt-line-height;
+  font-size: variables.$body-medium-size; // slightly smaller for symmetry with md avatar
+  line-height: variables.$body-medium-line-height;
 }
 
 .nav {
@@ -75,12 +75,16 @@
   }
   align-items: center;
   gap: variables.$spacing-2;
-  padding: 0.5rem 0.75rem;
+  padding: 0.375rem 0.625rem; // tighten
   border: 1px solid variables.$color-border;
-  border-radius: variables.$border-radius;
+  border-radius: variables.$border-radius-sm; // slimmer
   background: variables.$color-panel;
   color: variables.$color-text;
   text-decoration: none;
+  font-size: variables.$button-size;
+  line-height: variables.$button-line-height;
+  letter-spacing: variables.$button-letter-spacing;
+  font-weight: variables.$button-weight;
   @include mixins.hover-transition(border-color, box-shadow);
 
   &:hover {

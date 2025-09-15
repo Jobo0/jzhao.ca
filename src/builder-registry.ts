@@ -11,6 +11,14 @@ const MaintenanceBlurb = dynamic(
   { ssr: true }
 );
 const Hero = dynamic(() => import("@/components/Hero/Hero"), { ssr: true });
+const WindowHeroSection = dynamic(
+  () => import("@/components/WindowHeroSection/WindowHeroSection"),
+  { ssr: true }
+);
+const WindowLeftContentSection = dynamic(
+  () => import("@/components/WindowLeftContentSection/WindowLeftContentSection"),
+  { ssr: true }
+);
 
 Builder.registerComponent(Header, {
   name: "Header",
@@ -77,6 +85,32 @@ Builder.registerComponent(Hero, {
   inputs: [
     { name: "title", type: "string", defaultValue: "Welcome" },
     { name: "subtitle", type: "string", defaultValue: "To my website" },
+    { name: "className", type: "string", helperText: "Optional extra class name" },
+  ],
+});
+
+Builder.registerComponent(WindowHeroSection, {
+  name: "WindowHeroSection",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "Hello there" },
+    {
+      name: "description",
+      type: "string",
+      defaultValue: "Welcome to my site — here's what's new.",
+    },
+    { name: "className", type: "string", helperText: "Optional extra class name" },
+  ],
+});
+
+Builder.registerComponent(WindowLeftContentSection, {
+  name: "WindowLeftContentSection",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "Section Title" },
+    {
+      name: "description",
+      type: "string",
+      defaultValue: "A short description goes here to explain the content in this window.",
+    },
     { name: "className", type: "string", helperText: "Optional extra class name" },
   ],
 });
