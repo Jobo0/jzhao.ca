@@ -147,8 +147,8 @@ Builder.registerComponent(ButtonCompareCard, {
   inputs: [
     { name: "title", type: "string", defaultValue: "Compare" },
     {
-      name: "leftContent",
-      type: "object",
+      name: "items",
+      type: "list",
       subFields: [
         { name: "title", type: "string", defaultValue: "Tenant 1" },
         {
@@ -160,39 +160,23 @@ Builder.registerComponent(ButtonCompareCard, {
         {
           name: "html",
           type: "richText",
-          defaultValue: "<div><p>Left panel content</p></div>",
+          defaultValue: "<div><p>Panel content</p></div>",
         },
       ],
-      defaultValue: {
-        title: "Tenant 1",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        html: "<div><p>Left panel content</p></div>",
-      },
-    },
-    {
-      name: "rightContent",
-      type: "object",
-      subFields: [
-        { name: "title", type: "string", defaultValue: "Tenant 2" },
+      defaultValue: [
         {
-          name: "description",
-          type: "string",
-          defaultValue:
+          title: "Tenant 1",
+          description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          html: "<div><p>Left panel content</p></div>",
         },
         {
-          name: "html",
-          type: "richText",
-          defaultValue: "<div><p>Right panel content</p></div>",
+          title: "Tenant 2",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          html: "<div><p>Right panel content</p></div>",
         },
       ],
-      defaultValue: {
-        title: "Tenant 2",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        html: "<div><p>Right panel content</p></div>",
-      },
     },
   ],
 });

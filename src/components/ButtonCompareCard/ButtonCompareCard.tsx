@@ -4,14 +4,12 @@ import styles from "./ButtonCompareCard.module.scss";
 
 interface ButtonCompareCardProps {
   title: string;
-  leftContent: CompareContent;
-  rightContent: CompareContent;
+  items: CompareContent[];
 }
 
 const ButtonCompareCard = ({
   title,
-  leftContent,
-  rightContent,
+  items,
 }: ButtonCompareCardProps) => {
   return (
     <ContentCard>
@@ -19,7 +17,7 @@ const ButtonCompareCard = ({
         <header className={styles.header}>
           <h2 className={`${styles.title} title-medium`}>{title}</h2>
         </header>
-        <ButtonCompareContainer leftContent={leftContent} rightContent={rightContent} />
+        <ButtonCompareContainer items={items} />
       </div>
     </ContentCard>
   );

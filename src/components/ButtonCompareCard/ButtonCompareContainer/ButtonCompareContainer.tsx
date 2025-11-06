@@ -8,73 +8,74 @@ export interface CompareContent {
 }
 
 interface ButtonCompareContainerProps {
-  leftContent: CompareContent;
-  rightContent: CompareContent;
+  items: CompareContent[];
 }
 
 const ButtonCompareContainer = ({
-  leftContent = {
-    title: "Tenant 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    html: "<div><strong>Traditional workflow</strong></div>",
-  },
-  rightContent = {
-    title: "Tenant 2",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    html: "<div><strong>Autonomi workflow</strong></div>",
-  },
+  items = [
+    {
+      title: "Tenant 1",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      html: "<div><strong>Content 1</strong></div>",
+    },
+    {
+      title: "Tenant 2",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      html: "<div><strong>Content 2</strong></div>",
+    },
+  ],
 }: ButtonCompareContainerProps) => {
-  const [activePanel, setActivePanel] = useState<"left" | "right">("left");
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [navDirection, setNavDirection] = useState<"forward" | "backward">("forward");
 
-  const handlePanelChange = (panel: "left" | "right") => {
-    setActivePanel(panel);
+  const handlePanelChange = (index: number) => {
+    if (index === activeIndex) return;
+    setPreviousIndex(activeIndex);
+    setNavDirection(index > activeIndex ? "forward" : "backward");
+    setActiveIndex(index);
   };
+
   return (
     <section className={styles.container}>
-      <header
-        className={`${styles.header} ${
-          activePanel === "right" ? styles.secondActive : ""
-        }`}
-      >
-        <button
-          className={`${styles.button} ${
-            activePanel === "left" ? styles.active : ""
-          }`}
-          onClick={() => handlePanelChange("left")}
-        >
-          <div className={styles.buttonContent}>
-            <h2 className="body-large-strong">{leftContent.title}</h2>
-            <p className="body-small">{leftContent.description}</p>
-          </div>
-        </button>
-        <button
-          className={`${styles.button} ${
-            activePanel === "right" ? styles.active : ""
-          }`}
-          onClick={() => handlePanelChange("right")}
-        >
-          <div className={styles.buttonContent}>
-            <h2 className="body-large-strong">{rightContent.title}</h2>
-            <p className="body-small">{rightContent.description}</p>
-          </div>
-        </button>
+      <header className={styles.header}>
+        {items.map((item, index) => (
+          <button
+            key={index}
+            className={`${styles.button} ${activeIndex === index ? styles.active : ""}`}
+            onClick={() => handlePanelChange(index)}
+          >
+            <div className={styles.buttonContent}>
+              <h2 className="body-large-strong">{item.title}</h2>
+              <p className="body-small">{item.description}</p>
+            </div>
+          </button>
+        ))}
       </header>
       <div className={styles.imageContainer}>
         <div className={styles.overlay}>
-          <div
-            className={`${styles.image} ${styles.fromLeft} ${
-              activePanel === "left" ? styles.active : ""
-            }`}
-            dangerouslySetInnerHTML={{ __html: leftContent.html }}
-          />
-          <div
-            className={`${styles.image} ${styles.fromRight} ${
-              activePanel === "right" ? styles.active : ""
-            }`}
-            dangerouslySetInnerHTML={{ __html: rightContent.html }}
-          />
+          {items.map((item, index) => {
+            const isActive = index === activeIndex;
+            const isPrevious = index === previousIndex;
+            const directionClass = isActive
+              ? navDirection === "forward"
+                ? styles.fromRight
+                : styles.fromLeft
+              : isPrevious
+              ? navDirection === "forward"
+                ? styles.fromLeft
+                : styles.fromRight
+              : "";
+            return (
+              <div
+                key={index}
+                className={`${styles.image} ${directionClass} ${isActive ? styles.active : ""}`}
+                dangerouslySetInnerHTML={{ __html: item.html }}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
