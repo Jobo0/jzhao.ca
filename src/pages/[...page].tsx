@@ -7,7 +7,7 @@ import SeoHead from "@/components/SeoHead/SeoHead";
 import { GetStaticProps } from "next";
 import "@/builder-registry.ts"
 import PageBackgroundLayout from "@/components/PageBackgroundLayout/PageBackgroundLayout";
-
+import Header from "@/components/Header/Header";
 // Replace with your Public API Key
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY || "");
 
@@ -67,6 +67,7 @@ export default function Page({ page }: { page: BuilderContent | null }) {
       <SeoHead title={page?.data?.title} description={page?.data?.description} urlPath={page?.data?.url} />
       {/* Render the Builder page */}
       <PageBackgroundLayout>
+        <Header />
         <BuilderComponent model="page" content={page || undefined} />
       </PageBackgroundLayout>
     </>

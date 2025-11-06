@@ -10,14 +10,14 @@ type HeaderProps = {
 };
 
 export default function Header({
-  title = "jzhao.ca",
+  title = "jzhao",
   links = [
     { label: "Home", href: "/" },
-    { label: "Writing", href: "/writing" },
+    { label: "Experience", href: "/experience" },
     { label: "Projects", href: "/projects" },
   ],
-  ctaLabel = "About",
-  ctaHref = "/about",
+  ctaLabel = "Contact",
+  ctaHref = "/contact",
 }: HeaderProps) {
   return (
     <header className={styles.header}>

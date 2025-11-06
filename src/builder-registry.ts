@@ -11,6 +11,7 @@ const MaintenanceBlurb = dynamic(
   { ssr: true }
 );
 const Hero = dynamic(() => import("@/components/Hero/Hero"), { ssr: true });
+const BigHero = dynamic(() => import("@/components/BigHero/BigHero"), { ssr: true });
 const WindowHeroSection = dynamic(
   () => import("@/components/WindowHeroSection/WindowHeroSection"),
   { ssr: true }
@@ -82,6 +83,15 @@ Builder.registerComponent(MaintenanceBlurb, {
 
 Builder.registerComponent(Hero, {
   name: "Hero",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "Welcome" },
+    { name: "subtitle", type: "string", defaultValue: "To my website" },
+    { name: "className", type: "string", helperText: "Optional extra class name" },
+  ],
+});
+
+Builder.registerComponent(BigHero, {
+  name: "BigHero",
   inputs: [
     { name: "title", type: "string", defaultValue: "Welcome" },
     { name: "subtitle", type: "string", defaultValue: "To my website" },
