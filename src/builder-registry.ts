@@ -20,6 +20,14 @@ const WindowLeftContentSection = dynamic(
   () => import("@/components/WindowLeftContentSection/WindowLeftContentSection"),
   { ssr: true }
 );
+const ContentCard = dynamic(
+  () => import("@/components/ContentCard/ContentCard"),
+  { ssr: true }
+);
+const ButtonCompareCard = dynamic(
+  () => import("@/components/ButtonCompareCard/ButtonCompareCard"),
+  { ssr: true }
+);
 
 Builder.registerComponent(Header, {
   name: "Header",
@@ -125,4 +133,67 @@ Builder.registerComponent(WindowLeftContentSection, {
   ],
 });
 
+Builder.registerComponent(ContentCard, {
+  name: "ContentCard",
+  canHaveChildren: true,
+  inputs: [
+    { name: "className", type: "string", helperText: "Optional extra class name" },
+  ],
+});
+
+
+Builder.registerComponent(ButtonCompareCard, {
+  name: "ButtonCompareCard",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "Compare" },
+    {
+      name: "leftContent",
+      type: "object",
+      subFields: [
+        { name: "title", type: "string", defaultValue: "Tenant 1" },
+        {
+          name: "description",
+          type: "string",
+          defaultValue:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        },
+        {
+          name: "html",
+          type: "richText",
+          defaultValue: "<div><p>Left panel content</p></div>",
+        },
+      ],
+      defaultValue: {
+        title: "Tenant 1",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        html: "<div><p>Left panel content</p></div>",
+      },
+    },
+    {
+      name: "rightContent",
+      type: "object",
+      subFields: [
+        { name: "title", type: "string", defaultValue: "Tenant 2" },
+        {
+          name: "description",
+          type: "string",
+          defaultValue:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        },
+        {
+          name: "html",
+          type: "richText",
+          defaultValue: "<div><p>Right panel content</p></div>",
+        },
+      ],
+      defaultValue: {
+        title: "Tenant 2",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        html: "<div><p>Right panel content</p></div>",
+      },
+    },
+  ],
+});
 

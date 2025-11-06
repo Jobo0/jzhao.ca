@@ -17,7 +17,6 @@ export default function BigHero({ title, subtitle, children, className }: BigHer
             {subtitle && <p className={`body-large ${styles.subtitle}`}>{subtitle}</p>}
             {children}
         </div>
-
     </ContentSection>
   );
 }
