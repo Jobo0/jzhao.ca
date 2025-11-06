@@ -12,7 +12,9 @@
       rgba(variables.$color-neutral-000, 0) 100%
     );
   border-top: 2px solid variables.$color-border;
-  padding: variables.$spacing-6;
+  padding-left: variables.$spacing-6;
+  padding-right: variables.$spacing-6;
+
   position: relative;
   overflow: hidden;
 }

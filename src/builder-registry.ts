@@ -12,6 +12,7 @@ const MaintenanceBlurb = dynamic(
 );
 const Hero = dynamic(() => import("@/components/Hero/Hero"), { ssr: true });
 const BigHero = dynamic(() => import("@/components/BigHero/BigHero"), { ssr: true });
+/*
 const WindowHeroSection = dynamic(
   () => import("@/components/WindowHeroSection/WindowHeroSection"),
   { ssr: true }
@@ -24,8 +25,14 @@ const ContentCard = dynamic(
   () => import("@/components/ContentCard/ContentCard"),
   { ssr: true }
 );
+*/
 const ButtonCompareCard = dynamic(
   () => import("@/components/ButtonCompareCard/ButtonCompareCard"),
+  { ssr: true }
+);
+
+const BigLinkCard = dynamic(
+  () => import("@/components/BigLinkCard/BigLinkCard"),
   { ssr: true }
 );
 
@@ -106,7 +113,7 @@ Builder.registerComponent(BigHero, {
     { name: "className", type: "string", helperText: "Optional extra class name" },
   ],
 });
-
+/*
 Builder.registerComponent(WindowHeroSection, {
   name: "WindowHeroSection",
   inputs: [
@@ -140,7 +147,7 @@ Builder.registerComponent(ContentCard, {
     { name: "className", type: "string", helperText: "Optional extra class name" },
   ],
 });
-
+*/
 
 Builder.registerComponent(ButtonCompareCard, {
   name: "ButtonCompareCard",
@@ -178,6 +185,19 @@ Builder.registerComponent(ButtonCompareCard, {
         },
       ],
     },
+  ],
+});
+
+Builder.registerComponent(BigLinkCard, {
+  name: "BigLinkCard",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "A great resource" },
+    {
+      name: "description",
+      type: "string",
+      defaultValue: "A short description of this link",
+    },
+    { name: "link", type: "url", defaultValue: "/" },
   ],
 });
 
