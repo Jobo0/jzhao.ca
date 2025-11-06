@@ -199,8 +199,8 @@ Builder.registerComponent(BigLinkCard, {
     { name: "title", type: "string", defaultValue: "A great resource" },
     {
       name: "description",
-      type: "string",
-      defaultValue: "A short description of this link",
+      type: "richText",
+      defaultValue: "<p>A short description of this link</p>",
     },
     { name: "link", type: "url", defaultValue: "/" },
   ],
@@ -212,8 +212,8 @@ Builder.registerComponent(BigThumbnailCard, {
     { name: "title", type: "string", defaultValue: "A great resource" },
     {
       name: "description",
-      type: "string",
-      defaultValue: "A short description of this link",
+      type: "richText",
+      defaultValue: "<p>A short description of this link</p>",
     },
     { name: "link", type: "url", defaultValue: "/" },
     {

@@ -19,7 +19,10 @@ const BigLinkCard = ({
       <div className={styles.container}>
         <header className={styles.header}>
           <h2 className={`${styles.title} title-medium`}>{title}</h2>
-          <p className={`body-small ${styles.description}`}>{description}</p>
+          <div
+            className={`body-small ${styles.description}`}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         </header>
         <Link href={link} className={styles.actionButton} aria-label={`Open ${title}`}>
           <ArrowRight aria-hidden="true" />
