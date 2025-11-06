@@ -36,6 +36,11 @@ const BigLinkCard = dynamic(
   { ssr: true }
 );
 
+const BigThumbnailCard = dynamic(
+  () => import("@/components/BigThumbnailCard/BigThumbnailCard"),
+  { ssr: true }
+);
+
 Builder.registerComponent(Header, {
   name: "Header",
   inputs: [
@@ -198,6 +203,25 @@ Builder.registerComponent(BigLinkCard, {
       defaultValue: "A short description of this link",
     },
     { name: "link", type: "url", defaultValue: "/" },
+  ],
+});
+
+Builder.registerComponent(BigThumbnailCard, {
+  name: "BigThumbnailCard",
+  inputs: [
+    { name: "title", type: "string", defaultValue: "A great resource" },
+    {
+      name: "description",
+      type: "string",
+      defaultValue: "A short description of this link",
+    },
+    { name: "link", type: "url", defaultValue: "/" },
+    {
+      name: "image",
+      type: "string",
+      helperText: "Image path or URL",
+      defaultValue: "/window.svg",
+    },
   ],
 });
 
