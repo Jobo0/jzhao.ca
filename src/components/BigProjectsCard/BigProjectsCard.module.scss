@@ -163,3 +163,32 @@
   }
 }
 
+@include mixins.respond-below(variables.$breakpoint-md) {
+  .projectCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .thumbnail {
+    width: 100%;
+    min-height: 140px;
+    max-height: 200px;
+    align-self: stretch;
+    border-right: 1px solid variables.$color-border;
+    border-radius: variables.$border-radius-lg variables.$border-radius-lg 0 0;
+  }
+
+  .thumbnailInner {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 48%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 100%);
+  }
+
+  .thumbnailImage {
+    object-position: center center;
+  }
+}

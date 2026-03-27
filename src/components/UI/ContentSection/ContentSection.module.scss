@@ -1,10 +1,24 @@
 @use "../../../styles/variables" as variables;
+@use "../../../styles/mixins" as mixins;
 
 .root {
   width: 100%;
+  padding-top: 20px;
   padding-inline: 140px;
-  //padding-top: 20px;
+
+  @include mixins.respond-below(variables.$breakpoint-lg) {
+    padding-inline: 100px;
+  }
+
+  @include mixins.respond-below(variables.$breakpoint-md) {
+    padding-inline: 70px;
+  }
+
+  @include mixins.respond-below(variables.$breakpoint-sm) {
+    padding-inline: 56px;
+  }
+
+  @include mixins.respond-below(variables.$breakpoint-xs) {
+    padding-inline: variables.$spacing-4;
+  }
 }
-
-
-

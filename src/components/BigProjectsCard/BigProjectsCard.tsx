@@ -63,7 +63,7 @@ const BigProjectsCard = ({
                       alt=""
                       fill
                       className={styles.thumbnailImage}
-                      sizes="(max-width: 768px) min(28vw, 200px), 200px"
+                      sizes="(max-width: 767px) min(100vw, 640px), 200px"
                     />
                   </span>
                 </span>
