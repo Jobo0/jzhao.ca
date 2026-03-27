@@ -67,7 +67,7 @@ export default function Page({ page }: { page: BuilderContent | null }) {
       <SeoHead title={page?.data?.title} description={page?.data?.description} urlPath={page?.data?.url} />
       {/* Render the Builder page */}
       <PageBackgroundLayout>
-        <Header />
+
         <BuilderComponent model="page" content={page || undefined} />
       </PageBackgroundLayout>
     </>

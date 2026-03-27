@@ -1,0 +1,148 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-6;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+  gap: 35px;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+  flex: 1 1 auto;
+}
+
+.title {
+  margin: 0;
+  color: variables.$color-text;
+}
+
+.actionButton {
+  @include mixins.button-reset;
+  align-self: stretch;
+  height: auto;
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: variables.$color-text;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: variables.$border-radius;
+  font-size: 1.5rem;
+  line-height: 1;
+
+  &:hover {
+    transform: translateX(2px);
+    border-color: variables.$color-border;
+    color: variables.$color-link;
+  }
+}
+
+.timelineSection {
+  width: 100%;
+}
+
+.timelineList {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 variables.$spacing-8;
+  list-style: none;
+}
+
+.timelineList::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 0.35rem;
+  bottom: 0;
+  width: 1px;
+  background: variables.$color-border;
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: variables.$spacing-6;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.marker {
+  position: absolute;
+  left: calc(-1 * #{variables.$spacing-8} + 1px);
+  top: 0.35rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: variables.$color-panel;
+  border: 2px solid variables.$color-link;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.itemBody {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+  min-width: 0;
+}
+
+.period {
+  margin: 0;
+  color: variables.$color-text-muted;
+}
+
+.role {
+  margin: 0;
+  color: variables.$color-text;
+}
+
+.company {
+  margin: 0;
+  color: variables.$color-text-muted;
+}
+
+.location {
+  margin: 0;
+  color: variables.$color-text-muted;
+}
+
+.description {
+  margin: 0;
+  margin-top: variables.$spacing-2;
+  color: variables.$color-text-muted;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: variables.$spacing-2;
+  }
+
+  ul,
+  ol {
+    margin: variables.$spacing-2 0 0;
+    padding-left: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actionButton:hover {
+    transform: none;
+  }
+}

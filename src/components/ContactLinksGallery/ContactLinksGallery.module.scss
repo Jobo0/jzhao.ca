@@ -1,0 +1,64 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  width: 100%;
+}
+
+.gallery {
+  display: flex;
+  gap: variables.$spacing-4;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.card {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 220px;
+  aspect-ratio: 3 / 4;
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius-lg;
+  background-color: transparent;
+  color: variables.$color-text;
+  text-decoration: none;
+  overflow: hidden;
+
+  @include mixins.flex-center;
+  @include mixins.hover-transition(background-color, 0.2s);
+
+  &:hover {
+    background-color: variables.$color-shade-dark-30;
+    border-color: variables.$color-border;
+  }
+
+  &:focus-visible {
+    outline: 2px solid variables.$color-link;
+    outline-offset: 4px;
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: inherit;
+}
+
+.placeholderSymbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px dashed variables.$color-border;
+  font-size: 1.5rem;
+  color: variables.$color-text-muted;
+}
+
+.srOnly {
+  @include mixins.sr-only;
+}
+

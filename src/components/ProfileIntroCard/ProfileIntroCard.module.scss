@@ -1,0 +1,260 @@
+@use "../../styles/variables" as variables;
+@use "../../styles/mixins" as mixins;
+
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-6;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+  gap: 35px;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+  flex: 1 1 auto;
+}
+
+.title {
+  margin: 0;
+  color: variables.$color-text;
+}
+
+.actionButton {
+  @include mixins.button-reset;
+  align-self: stretch;
+  height: auto;
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: variables.$color-text;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: variables.$border-radius;
+  font-size: 1.5rem;
+  line-height: 1;
+
+  &:hover {
+    transform: translateX(2px);
+    border-color: variables.$color-border;
+    color: variables.$color-link;
+  }
+}
+
+.introBlock {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-4;
+}
+
+.introBlockWithImage {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: variables.$spacing-6;
+}
+
+.avatar {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  flex: 0 0 auto;
+  border-radius: variables.$border-radius-lg;
+  overflow: hidden;
+  border: 1px solid variables.$color-border;
+  background: variables.$color-panel;
+}
+
+.avatarImage {
+  object-fit: cover;
+}
+
+.intro {
+  margin: 0;
+  color: variables.$color-text-muted;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: variables.$spacing-2;
+  }
+}
+
+.tabSection {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-4;
+}
+
+.tabList {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: variables.$spacing-2;
+  padding: variables.$spacing-1;
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius-lg;
+  background: rgba(variables.$color-neutral-000, 0.02);
+  align-self: flex-start;
+}
+
+.tab {
+  @include mixins.button-reset;
+  padding: variables.$spacing-2 variables.$spacing-4;
+  border-radius: variables.$border-radius;
+  color: variables.$color-text-muted;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$body-small-size;
+  line-height: variables.$body-small-line-height;
+  @include mixins.hover-transition(color, background-color);
+
+  &:hover {
+    color: variables.$color-text;
+    background-color: variables.$color-shade-dark-10;
+  }
+
+  &:focus-visible {
+    outline: 2px solid variables.$color-link;
+    outline-offset: 2px;
+  }
+}
+
+.tabActive {
+  color: variables.$color-text;
+  background-color: variables.$color-tint-light-10;
+}
+
+.tabPanel {
+  margin: 0;
+  min-height: 1.5rem;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.itemGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: variables.$spacing-4;
+  width: 100%;
+}
+
+// Skills: same 200px minimum track size, grow with available space up to a per-card max
+.itemGridSkills {
+  grid-template-columns: repeat(auto-fit, minmax(200px, min(400px, 1fr)));
+}
+
+.itemCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: variables.$spacing-3;
+  padding: variables.$spacing-4;
+  border: 1px solid variables.$color-border;
+  border-radius: variables.$border-radius-lg;
+  background: rgba(variables.$color-neutral-000, 0.02);
+  min-width: 0;
+}
+
+.itemIconWrap {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid variables.$color-border;
+  background: variables.$color-panel;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: variables.$color-text;
+}
+
+.itemIconSvg {
+  width: 22px;
+  height: 22px;
+}
+
+.itemText {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.itemLabel {
+  margin: 0;
+  color: variables.$color-text;
+  overflow-wrap: break-word;
+}
+
+.itemDescription {
+  margin: 0;
+  color: variables.$color-text-muted;
+  overflow-wrap: break-word;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: variables.$spacing-2;
+  }
+
+  ul,
+  ol {
+    margin: variables.$spacing-2 0 0;
+    padding-left: 1.25rem;
+    text-align: left;
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  a {
+    color: variables.$color-link;
+  }
+}
+
+@include mixins.respond-below(variables.$breakpoint-sm) {
+  .introBlockWithImage {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .avatar {
+    width: 96px;
+    height: 96px;
+    align-self: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actionButton:hover {
+    transform: none;
+  }
+}

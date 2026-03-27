@@ -1,0 +1,62 @@
+@use "@/styles/_variables" as variables;
+@use "@/styles/_mixins" as mixins;
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-4;
+  padding: variables.$spacing-6 0;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: variables.$spacing-4;
+}
+
+.copyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.gallerySlot {
+  width: 100%;
+}
+
+.extraGroup {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-2;
+}
+
+.title {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0;
+}
+
+.actionGroup {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@include mixins.respond-below(variables.$breakpoint-sm) {
+  .headerRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionGroup {
+    justify-content: flex-start;
+  }
+}

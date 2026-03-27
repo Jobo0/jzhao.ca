@@ -28,6 +28,7 @@ const BigLinkCard = ({
           <ArrowRight aria-hidden="true" />
         </Link>
       </div>
+      <div className={styles.content}></div>
     </ContentCard>
   );
 };
