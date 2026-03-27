@@ -7,7 +7,7 @@ import SeoHead from "@/components/SeoHead/SeoHead";
 import { GetStaticProps } from "next";
 import "@/builder-registry.ts"
 import PageBackgroundLayout from "@/components/PageBackgroundLayout/PageBackgroundLayout";
-import Header from "@/components/Header/Header";
+//import Header from "@/components/Header/Header";
 // Replace with your Public API Key
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY || "");
 
