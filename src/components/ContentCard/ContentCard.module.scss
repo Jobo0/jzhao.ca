@@ -1,3 +1,6 @@
+// Use padding-block only so WindowCard horizontal padding is not overridden by a
+// shorthand `padding: N 0` (left/right 0 wins over sibling-module order in prod).
 .card {
-    padding: 140px 0;
+  padding-top: 140px;
+  padding-bottom: 140px;
 }

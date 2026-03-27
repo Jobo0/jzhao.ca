@@ -64,7 +64,7 @@ $color-link:       $color-link-600;
 $color-accent:     $color-brand-600;
 $color-code:       $color-code-bg;
 
-// Typography
+// Typography — sizes/line-heights in rem so they scale with user font settings
 
 // Font Families
 $font-family-sans:
@@ -198,14 +198,14 @@ $font-size-lg: 1.125rem;
 $font-size-xl: 1.25rem;
 $font-size-2xl: 1.5rem;
 
-// Spacing
-$spacing-1: 0.25rem;
-$spacing-2: 0.5rem;
-$spacing-3: 0.75rem;
-$spacing-4: 1rem;
-$spacing-6: 1.5rem;
-$spacing-8: 2rem;
-$spacing-16: 4rem;
+// Spacing (px — layout stays stable when root font size changes; typography uses rem above)
+$spacing-1: 4px;
+$spacing-2: 8px;
+$spacing-3: 12px;
+$spacing-4: 16px;
+$spacing-6: 24px;
+$spacing-8: 32px;
+$spacing-16: 64px;
 
 // Breakpoints
 $breakpoint-xs: 376px;
@@ -214,10 +214,10 @@ $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
 
-// Border radius
-$border-radius-sm: 0.25rem;
-$border-radius: 0.375rem;
-$border-radius-lg: 0.5rem;
+// Border radius (px — matches corners to layout, not text scale)
+$border-radius-sm: 4px;
+$border-radius: 6px;
+$border-radius-lg: 8px;
 
 // Shadows
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
