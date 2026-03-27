@@ -32,18 +32,15 @@ const BigProjectsCard = ({
   return (
     <ContentCard>
       <div className={clsx(styles.root, className)}>
-        <div className={styles.topRow}>
-          <header className={styles.header}>
+        <header className={styles.cardHeader}>
+          <div className={styles.topRow}>
             <h2 className={`${styles.title} title-medium`}>{title}</h2>
-            <div
-              className={`body-small ${styles.description}`}
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-          </header>
-          <Link href={link} className={styles.actionButton} aria-label={`Open ${title}`}>
-            <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
+          </div>
+          <div
+            className={`body-small ${styles.intro}`}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        </header>
 
         <div className={styles.projectsGrid} role="list" aria-label="Projects">
           {projects.map(({ title: projectTitle, description: projectDescription, thumbnail, href }, index) => {
@@ -60,7 +57,15 @@ const BigProjectsCard = ({
                 rel={external ? "noreferrer noopener" : undefined}
               >
                 <span className={styles.thumbnail} aria-hidden="true">
-                  <Image src={thumbnail} alt="" fill className={styles.thumbnailImage} sizes="(max-width: 768px) 56px, 56px" />
+                  <span className={styles.thumbnailInner}>
+                    <Image
+                      src={thumbnail}
+                      alt=""
+                      fill
+                      className={styles.thumbnailImage}
+                      sizes="(max-width: 768px) min(28vw, 200px), 200px"
+                    />
+                  </span>
                 </span>
                 <span className={styles.projectText}>
                   <span className={`body-large-strong ${styles.projectTitle}`}>{projectTitle}</span>

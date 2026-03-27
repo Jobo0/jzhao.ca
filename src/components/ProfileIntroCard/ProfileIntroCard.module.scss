@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../styles/variables" as variables;
 @use "../../styles/mixins" as mixins;
 
@@ -8,19 +9,19 @@
   gap: variables.$spacing-6;
 }
 
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-6;
+  width: 100%;
+}
+
 .topRow {
   display: flex;
   flex-direction: row;
   gap: 35px;
   justify-content: space-between;
   align-items: stretch;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: variables.$spacing-2;
-  flex: 1 1 auto;
 }
 
 .title {
@@ -119,11 +120,17 @@
   font-family: variables.$font-family-mono;
   font-size: variables.$body-small-size;
   line-height: variables.$body-small-line-height;
-  @include mixins.hover-transition(color, background-color);
+  box-shadow: 0 0 0 1px transparent;
+  transition:
+    color 0.25s ease-in-out,
+    background-color 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out,
+    transform 0.22s ease-in-out;
 
   &:hover {
     color: variables.$color-text;
-    background-color: variables.$color-shade-dark-10;
+    background-color: color.change(variables.$color-link-600, $alpha: 0.12);
+    box-shadow: 0 0 0 1px color.change(variables.$color-link-600, $alpha: 0.22);
   }
 
   &:focus-visible {
@@ -133,17 +140,23 @@
 }
 
 .tabActive {
-  color: variables.$color-text;
-  background-color: variables.$color-tint-light-10;
+  color: variables.$color-link;
+  background-color: color.change(variables.$color-link-600, $alpha: 0.22);
+  box-shadow: 0 0 0 1px color.change(variables.$color-link-600, $alpha: 0.38);
+
+  &:hover {
+    color: variables.$color-text;
+    background-color: color.change(variables.$color-link-600, $alpha: 0.34);
+    box-shadow:
+      0 0 0 1px color.change(variables.$color-link-600, $alpha: 0.55),
+      0 0 18px color.change(variables.$color-link-600, $alpha: 0.22);
+    transform: translateY(-1px);
+  }
 }
 
 .tabPanel {
   margin: 0;
   min-height: 1.5rem;
-
-  &[hidden] {
-    display: none;
-  }
 }
 
 .itemGrid {
@@ -255,6 +268,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .actionButton:hover {
+    transform: none;
+  }
+
+  .tab {
+    transition: none;
+  }
+
+  .tabActive:hover {
     transform: none;
   }
 }

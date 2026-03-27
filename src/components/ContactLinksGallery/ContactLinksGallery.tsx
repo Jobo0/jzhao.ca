@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import clsx from "clsx";
 import Link from "next/link";
-import { FileText, Github, Linkedin, Mail } from "lucide-react";
+import { FileUser, Github, Linkedin, Mail } from "lucide-react";
 import ContentSection from "@/components/UI/ContentSection/ContentSection";
 import styles from "./ContactLinksGallery.module.scss";
 
@@ -38,7 +38,7 @@ const DEFAULT_ITEMS: ContactLinksGalleryItem[] = [
   {
     href: "/resume.pdf",
     label: "Resume",
-    icon: <FileText aria-hidden="true" />,
+    icon: <FileUser aria-hidden="true" />,
   },
 ];
 
@@ -56,7 +56,7 @@ const resolveIcon = ({ icon, href, label }: ContactLinksGalleryItem) => {
     resumeInLabel;
 
   if (looksLikeResume) {
-    return <FileText aria-hidden="true" />;
+    return <FileUser aria-hidden="true" />;
   }
 
   if (normalizedHref.includes("linkedin")) {

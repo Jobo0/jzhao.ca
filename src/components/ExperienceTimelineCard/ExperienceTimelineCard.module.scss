@@ -138,6 +138,16 @@
   ol {
     margin: variables.$spacing-2 0 0;
     padding-left: 1.25rem;
+    // Undo inherited list-style: none from .timelineList (list-style inherits)
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
   }
 }
 

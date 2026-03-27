@@ -9,6 +9,13 @@
   gap: variables.$spacing-6;
 }
 
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-6;
+  width: 100%;
+}
+
 .topRow {
   display: flex;
   flex-direction: row;
@@ -17,21 +24,24 @@
   align-items: stretch;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: variables.$spacing-2;
-  flex: 1 1 auto;
-}
-
 .title {
   margin: 0;
   color: variables.$color-text;
 }
 
-.description {
+.intro {
   margin: 0;
   color: variables.$color-text-muted;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: variables.$spacing-2;
+  }
 }
 
 .actionButton {
@@ -69,7 +79,7 @@
   display: flex;
   flex-direction: row;
   gap: variables.$spacing-4;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
   box-sizing: border-box;
   padding: variables.$spacing-6;
@@ -94,18 +104,37 @@
 }
 
 .thumbnail {
-  width: 56px;
-  height: 56px;
-  border-radius: variables.$border-radius;
-  border: 1px solid variables.$color-border;
-  background: variables.$color-panel;
   position: relative;
-  overflow: hidden;
   flex: 0 0 auto;
+  align-self: stretch;
+  width: clamp(100px, 28vw, 200px);
+  min-height: 3.5rem;
+  border: 1px solid variables.$color-border;
+  border-right: none;
+  border-radius: variables.$border-radius-lg 0 0 variables.$border-radius-lg;
+  background: variables.$color-panel;
+  overflow: hidden;
+}
+
+.thumbnailInner {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 52%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to right, #000 0%, #000 52%, transparent 100%);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
 }
 
 .thumbnailImage {
   object-fit: cover;
+  object-position: left center;
 }
 
 .projectText {
