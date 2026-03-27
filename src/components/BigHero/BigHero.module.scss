@@ -1,13 +1,61 @@
+@use "../../styles/variables" as v;
+
+.root {
+  position: relative;
+}
+
 .content {
-    padding: 280px 0;
+  padding: 280px 0;
+  will-change: transform;
 }
+
 .title {
-    text-align: center;
+  text-align: center;
 }
+
 .subtitle1 {
-    text-align: center;
-    margin-bottom: 8px;
+  text-align: center;
+  margin-bottom: 8px;
 }
+
 .subtitle2 {
-    text-align: center;
+  text-align: center;
+}
+
+.interactiveLine {
+  text-align: center;
+}
+
+.charRun {
+  display: inline;
+}
+
+// Per-glyph glint (local coords via --hero-glint-*) + proximity opacity from JS
+.char {
+  display: inline-block;
+  white-space: pre;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.charTitle {
+  background-image:
+    radial-gradient(
+      circle 5rem at var(--hero-glint-x, 50%) var(--hero-glint-y, 50%),
+      rgba(236, 233, 241, 0.26),
+      transparent 62%
+    ),
+    linear-gradient(180deg, v.$color-text-100 0%, v.$color-text-100 100%);
+}
+
+.charSubtitle {
+  background-image:
+    radial-gradient(
+      circle 3.25rem at var(--hero-glint-x, 50%) var(--hero-glint-y, 50%),
+      rgba(236, 233, 241, 0.16),
+      transparent 62%
+    ),
+    linear-gradient(180deg, v.$color-text-300 0%, v.$color-text-300 100%);
 }

@@ -18,6 +18,10 @@
   overflow: hidden;
 }
 
+.parallaxRoot {
+  will-change: transform;
+}
+
 @keyframes windowcard-pulse {
   0%, 100% { opacity: 0.25; }
   50% { opacity: 0.4; }

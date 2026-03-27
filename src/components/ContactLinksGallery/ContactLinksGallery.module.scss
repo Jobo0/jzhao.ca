@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+.parallaxWrap {
+  width: 100%;
+  will-change: transform;
+}
+
 .gallery {
   display: flex;
   gap: variables.$spacing-4;
