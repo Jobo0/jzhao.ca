@@ -1,5 +1,6 @@
 @use "../../styles/variables" as variables;
 @use "../../styles/mixins" as mixins;
+@use "sass:color";
 
 .root {
   width: 100%;
@@ -73,9 +74,19 @@
   gap: variables.$spacing-6;
   width: 100%;
   align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.projectListItem {
+  width: 100%;
 }
 
 .projectCard {
+  $border-hover: color.mix(variables.$color-link-600, variables.$color-border, 42%);
+  $border-active: color.mix(variables.$color-link-600, variables.$color-border, 32%);
+
   display: flex;
   flex-direction: row;
   gap: variables.$spacing-4;
@@ -89,17 +100,57 @@
   color: variables.$color-text;
   text-decoration: none;
   overflow: hidden;
+  cursor: pointer;
+  transform: translateY(0);
+  box-shadow: none;
 
-  @include mixins.hover-transition(background-color, 0.2s);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    border-color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
 
   &:hover {
     background-color: variables.$color-shade-dark-30;
-    border-color: variables.$color-border;
+    border-color: $border-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(variables.$color-neutral-1000, 0.45);
+  }
+
+  &:hover .thumbnail {
+    border-color: $border-hover;
+  }
+
+  &:active {
+    transform: translateY(0);
+    border-color: $border-active;
+    box-shadow: 0 2px 8px rgba(variables.$color-neutral-1000, 0.35);
+    transition-duration: 0.12s;
+  }
+
+  &:active .thumbnail {
+    border-color: $border-active;
   }
 
   &:focus-visible {
     outline: 2px solid variables.$color-link;
     outline-offset: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projectCard {
+    transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    &:active {
+      transform: none;
+      box-shadow: none;
+    }
   }
 }
 
@@ -114,6 +165,7 @@
   border-radius: variables.$border-radius-lg 0 0 variables.$border-radius-lg;
   background: variables.$color-panel;
   overflow: hidden;
+  transition: border-color 0.2s ease-in-out;
 }
 
 .thumbnailInner {

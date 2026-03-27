@@ -1,7 +1,6 @@
 import ContentCard from "@/components/ContentCard/ContentCard";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 import clsx from "clsx";
 import styles from "./BigProjectsCard.module.scss";
 
@@ -42,42 +41,42 @@ const BigProjectsCard = ({
           />
         </header>
 
-        <div className={styles.projectsGrid} role="list" aria-label="Projects">
+        <ul className={styles.projectsGrid} aria-label="Projects">
           {projects.map(({ title: projectTitle, description: projectDescription, thumbnail, href }, index) => {
             const external = isExternalHref(href);
 
             return (
-              <Link
-                key={`${projectTitle}-${index}`}
-                href={href}
-                className={styles.projectCard}
-                role="listitem"
-                aria-label={`Open ${projectTitle}`}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noreferrer noopener" : undefined}
-              >
-                <span className={styles.thumbnail} aria-hidden="true">
-                  <span className={styles.thumbnailInner}>
-                    <Image
-                      src={thumbnail}
-                      alt=""
-                      fill
-                      className={styles.thumbnailImage}
-                      sizes="(max-width: 767px) min(100vw, 640px), 200px"
+              <li key={`${projectTitle}-${index}`} className={styles.projectListItem}>
+                <Link
+                  href={href}
+                  className={styles.projectCard}
+                  aria-label={`Open ${projectTitle}`}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noreferrer noopener" : undefined}
+                >
+                  <span className={styles.thumbnail} aria-hidden="true">
+                    <span className={styles.thumbnailInner}>
+                      <Image
+                        src={thumbnail}
+                        alt=""
+                        fill
+                        className={styles.thumbnailImage}
+                        sizes="(max-width: 767px) min(100vw, 640px), 200px"
+                      />
+                    </span>
+                  </span>
+                  <span className={styles.projectText}>
+                    <span className={`body-large-strong ${styles.projectTitle}`}>{projectTitle}</span>
+                    <span
+                      className={`body-small ${styles.projectDescription}`}
+                      dangerouslySetInnerHTML={{ __html: projectDescription }}
                     />
                   </span>
-                </span>
-                <span className={styles.projectText}>
-                  <span className={`body-large-strong ${styles.projectTitle}`}>{projectTitle}</span>
-                  <span
-                    className={`body-small ${styles.projectDescription}`}
-                    dangerouslySetInnerHTML={{ __html: projectDescription }}
-                  />
-                </span>
-              </Link>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </ContentCard>
   );
