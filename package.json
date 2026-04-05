@@ -12,6 +12,7 @@
     "@builder.io/react": "^8.2.7",
     "@fontsource/ibm-plex-sans": "^5.2.6",
     "@fontsource/jetbrains-mono": "^5.2.6",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.542.0",
