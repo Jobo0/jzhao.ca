@@ -17,12 +17,14 @@ interface CardScrollAnimationWrapperProps {
   children: ReactNode;
   numFirstElements?: number;
   numLastElements?: number;
+  bottomSeenOffsetPx?: number;
 }
 
 const CardScrollAnimationWrapper = ({
   children,
   numFirstElements = 0,
   numLastElements = 1,
+  bottomSeenOffsetPx = 40,
 }: CardScrollAnimationWrapperProps) => {
   const clamp = (value: number, min: number, max: number) =>
     Math.min(max, Math.max(min, value));
@@ -106,10 +108,12 @@ const CardScrollAnimationWrapper = ({
           // Entry ends when the card reaches the sticky anchor.
           const enterEnd = start;
 
-          // Amount the card exceeds the viewport height. This distance will be
-          // used to translate the sticky card upwards so the bottom of the card
-          // can scroll into view before the next animation phase.
-          const overhang = Math.max(0, ref.offsetHeight - window.innerHeight);
+          // Amount the card exceeds the viewport height.
+          const rawOverhang = Math.max(0, ref.offsetHeight - window.innerHeight);
+
+          // Positive offset means "consider bottom seen earlier" (less travel).
+          // Negative offset means "consider bottom seen later" (more travel).
+          const overhang = Math.max(0, rawOverhang - bottomSeenOffsetPx);
 
           // Normalized scroll progress that equals the overhang (1:1 scroll-to-translate).
           const overhangNormalized = overhang / containerHeight;
@@ -177,7 +181,7 @@ const CardScrollAnimationWrapper = ({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("load", calculateRanges);
     };
-  }, [childArray.length]);
+  }, [bottomSeenOffsetPx, childArray.length]);
 
   useEffect(() => {
     // Staged/snap-like scroll interception disabled: use native page scroll.
@@ -225,10 +229,12 @@ const CardScrollAnimationWrapper = ({
             }}
             isLast={isTrailingStatic}
             isLeadingStatic={isLeadingStatic}
-            isSticky={isHero}
+            isSticky={isHero || shouldAnimate}
             stickyEnabled={stickyEnabled}
+            isLastAnimated={shouldAnimate && index === lastAnimatedIndex}
             fadeOutStart={isHero ? firstAnimatedRange.reachViewport60 : undefined}
             fadeOutEnd={isHero ? firstAnimatedRange.reachViewport30 : undefined}
+            stackOffsetPx={shouldAnimate && index > firstAnimatedIndex ? -80 : 0}
             range={animationRanges[index] ?? defaultRange}
             z={index}
             scrollYProgress={scrollYProgress}

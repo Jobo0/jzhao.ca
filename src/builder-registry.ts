@@ -510,6 +510,13 @@ Builder.registerComponent(CardScrollContainer, {
       helperText:
         "Number of trailing children that skip the sticky scroll effect (e.g. a footer card).",
     },
+    {
+      name: "bottomSeenOffsetPx",
+      type: "number",
+      defaultValue: 0,
+      helperText:
+        "Adjust when a sticky card is treated as having reached its bottom. Positive = earlier, negative = later.",
+    },
   ],
 });
 

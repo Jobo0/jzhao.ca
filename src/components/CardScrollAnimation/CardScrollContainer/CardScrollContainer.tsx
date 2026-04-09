@@ -6,6 +6,7 @@ import CardScrollAnimationWrapper from "../CardScrollAnimationWrapper";
 interface CardScrollContainerProps extends PropsWithChildren {
   numFirstElements?: number;
   numLastElements?: number;
+  bottomSeenOffsetPx?: number;
 }
 
 const CardScrollContainer = (props: CardScrollContainerProps) => {
@@ -13,6 +14,7 @@ const CardScrollContainer = (props: CardScrollContainerProps) => {
     <CardScrollAnimationWrapper
       numFirstElements={props.numFirstElements}
       numLastElements={props.numLastElements}
+      bottomSeenOffsetPx={props.bottomSeenOffsetPx}
     >
       {React.Children.toArray(props.children)}
     </CardScrollAnimationWrapper>

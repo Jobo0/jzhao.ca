@@ -6,7 +6,6 @@
 
 .card {
   position: relative;
-  min-height: 100vh;
   transform-origin: center top;
   // Target nested element with class containing "contentCard"
   & div > [class*="contentCard"] {
@@ -17,7 +16,6 @@
 
 .lastCard {
   position: relative;
-  min-height: 100vh;
 }
 
 .leadingStaticCard {

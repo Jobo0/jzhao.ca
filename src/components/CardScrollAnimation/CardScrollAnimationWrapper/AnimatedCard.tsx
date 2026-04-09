@@ -13,6 +13,7 @@ import {
   easeInOut,
   useAnimationControls,
   useMotionValueEvent,
+  useMotionTemplate,
   useReducedMotion,
 } from "framer-motion";
 import type { MotionValue } from "framer-motion";
@@ -26,8 +27,10 @@ interface AnimatedCardProps {
   isLeadingStatic?: boolean;
   isSticky?: boolean;
   stickyEnabled?: boolean;
+  isLastAnimated?: boolean;
   fadeOutStart?: number;
   fadeOutEnd?: number;
+  stackOffsetPx?: number;
   shouldAnimate: boolean;
   range: AnimationRange;
   z: number;
@@ -42,8 +45,10 @@ const AnimatedCard = ({
   isLeadingStatic = false,
   isSticky = false,
   stickyEnabled = true,
+  isLastAnimated = false,
   fadeOutStart,
   fadeOutEnd,
+  stackOffsetPx = 0,
   shouldAnimate,
   range,
   z,
@@ -355,7 +360,7 @@ const AnimatedCard = ({
   const safeEnterEnd = Math.max(enterEnd, enterStart + epsilon);
   const safeEnd = Math.max(end, safeEnterEnd + epsilon);
   const safeExitStart = Math.min(
-    Math.max(Math.max(revealEnd, safeEnd - 0.08), safeEnterEnd + epsilon),
+    Math.max(revealEnd + 0.02, safeEnterEnd + epsilon),
     safeEnd - epsilon
   );
   const hasFadeRange =
@@ -419,6 +424,7 @@ const AnimatedCard = ({
       return 0;
     }
 
+    if (isLastAnimated) return 1;
     if (!shouldAnimate) return 1;
     // Keep shell opacity stable through intro; only fade on exit.
     if (latest <= safeExitStart) return 1;
@@ -428,6 +434,16 @@ const AnimatedCard = ({
     }
     return 0;
   });
+  const exitBlurPx = useTransform(scrollYProgress, (latest) => {
+    if (!shouldAnimate || hasFadeRange || isLastAnimated) return 0;
+    if (latest <= safeExitStart) return 0;
+    if (latest < safeEnd) {
+      const progress = (latest - safeExitStart) / (safeEnd - safeExitStart);
+      return eased(progress) * 6;
+    }
+    return 6;
+  });
+  const exitBlurFilter = useMotionTemplate`blur(${exitBlurPx}px)`;
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const previous = prevProgressRef.current;
@@ -494,10 +510,11 @@ const AnimatedCard = ({
       }}
       style={{
         scale,
-        y: 0,
+        y: shouldAnimate ? composedY : 0,
         opacity,
+        filter: shouldAnimate && !hasFadeRange ? exitBlurFilter : "blur(0px)",
         zIndex: z,
-        marginTop: 0,
+        marginTop: stackOffsetPx,
       }}
       className={`${cardClassName} ${stickyClassName}`}
     >
