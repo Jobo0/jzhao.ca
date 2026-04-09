@@ -38,6 +38,11 @@
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  transition: opacity 180ms ease;
+}
+
+.pointerActive .char {
+  transition: none;
 }
 
 .charTitle {

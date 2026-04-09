@@ -18,6 +18,7 @@ const PARALLAX_PX = 7;
 const PROXIMITY_MAX_PX = 110;
 const PROXIMITY_OPACITY_MIN = 0.78;
 const PROXIMITY_OPACITY_MAX = 1;
+const EFFECT_FADE_MS = 1000;
 
 const springOpts = { stiffness: 120, damping: 22, mass: 0.45 };
 
@@ -50,6 +51,9 @@ export default function BigHero({ title, subtitle1, subtitle2, children, classNa
   const springY = useSpring(0, springOpts);
   const pointerActiveRef = useRef(false);
   const rafRef = useRef<number | null>(null);
+  const disableTransitionTimeoutRef = useRef<number | null>(null);
+  const leaveResetRafRef = useRef<number | null>(null);
+  const leaveCleanupTimeoutRef = useRef<number | null>(null);
   const pendingRef = useRef<{ x: number; y: number } | null>(null);
 
   const flushPointer = useCallback(() => {
@@ -58,6 +62,7 @@ export default function BigHero({ title, subtitle1, subtitle2, children, classNa
     if (!root || !p) return;
     const { x, y } = p;
     const active = pointerActiveRef.current;
+
     root.querySelectorAll<HTMLElement>("[data-hero-char]").forEach((span) => {
       const r = span.getBoundingClientRect();
       span.style.setProperty("--hero-glint-x", `${x - r.left}px`);
@@ -82,6 +87,9 @@ export default function BigHero({ title, subtitle1, subtitle2, children, classNa
   useEffect(
     () => () => {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      if (disableTransitionTimeoutRef.current != null) window.clearTimeout(disableTransitionTimeoutRef.current);
+      if (leaveResetRafRef.current != null) cancelAnimationFrame(leaveResetRafRef.current);
+      if (leaveCleanupTimeoutRef.current != null) window.clearTimeout(leaveCleanupTimeoutRef.current);
     },
     []
   );
@@ -98,14 +106,64 @@ export default function BigHero({ title, subtitle1, subtitle2, children, classNa
 
   const onPointerEnter = () => {
     pointerActiveRef.current = true;
+    if (leaveResetRafRef.current != null) {
+      cancelAnimationFrame(leaveResetRafRef.current);
+      leaveResetRafRef.current = null;
+    }
+    if (leaveCleanupTimeoutRef.current != null) {
+      window.clearTimeout(leaveCleanupTimeoutRef.current);
+      leaveCleanupTimeoutRef.current = null;
+    }
+    const root = wrapRef.current;
+    if (!root) return;
+    root.querySelectorAll<HTMLElement>("[data-hero-char]").forEach((span) => {
+      span.style.transition = "";
+    });
+    root.classList.remove(styles.pointerActive);
+    if (disableTransitionTimeoutRef.current != null) {
+      window.clearTimeout(disableTransitionTimeoutRef.current);
+      disableTransitionTimeoutRef.current = null;
+    }
+    disableTransitionTimeoutRef.current = window.setTimeout(() => {
+      disableTransitionTimeoutRef.current = null;
+      if (!pointerActiveRef.current || !wrapRef.current) return;
+      wrapRef.current.classList.add(styles.pointerActive);
+    }, EFFECT_FADE_MS);
   };
 
   const onPointerLeave = () => {
     pointerActiveRef.current = false;
+    const root = wrapRef.current;
+    if (root) root.classList.remove(styles.pointerActive);
+    if (disableTransitionTimeoutRef.current != null) {
+      window.clearTimeout(disableTransitionTimeoutRef.current);
+      disableTransitionTimeoutRef.current = null;
+    }
     pendingRef.current = null;
     springX.set(0);
     springY.set(0);
-    resetChars();
+    if (!root) return;
+    const spans = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-char]"));
+    spans.forEach((span) => {
+      span.style.transition = `opacity ${EFFECT_FADE_MS}ms ease`;
+    });
+    if (leaveResetRafRef.current != null) cancelAnimationFrame(leaveResetRafRef.current);
+    leaveResetRafRef.current = requestAnimationFrame(() => {
+      leaveResetRafRef.current = null;
+      if (pointerActiveRef.current) return;
+      spans.forEach((span) => {
+        span.style.opacity = "";
+      });
+      if (leaveCleanupTimeoutRef.current != null) window.clearTimeout(leaveCleanupTimeoutRef.current);
+      leaveCleanupTimeoutRef.current = window.setTimeout(() => {
+        leaveCleanupTimeoutRef.current = null;
+        if (pointerActiveRef.current) return;
+        resetChars();
+        spans.forEach((span) => {
+          span.style.transition = "";
+        });
+      }, EFFECT_FADE_MS);
+    });
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {

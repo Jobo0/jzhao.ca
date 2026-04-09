@@ -495,6 +495,14 @@ Builder.registerComponent(CardScrollContainer, {
   canHaveChildren: true,
   inputs: [
     {
+      name: "numFirstElements",
+      type: "number",
+      defaultValue: 0,
+      min: 0,
+      helperText:
+        "Number of leading children that skip the staged scroll + intro animation (e.g. a hero block).",
+    },
+    {
       name: "numLastElements",
       type: "number",
       defaultValue: 1,

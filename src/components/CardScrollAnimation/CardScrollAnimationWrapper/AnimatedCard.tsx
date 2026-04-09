@@ -1,9 +1,16 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import {
   motion,
   useTransform,
   easeOut,
-  easeIn,
+  easeInOut,
   useAnimationControls,
   useMotionValueEvent,
   useReducedMotion,
@@ -11,16 +18,16 @@ import {
 import type { MotionValue } from "framer-motion";
 import styles from "./CardScrollAnimationWrapper.module.scss";
 import type { AnimationRange } from "./CardScrollAnimationWrapper";
-import { useCardIntro } from "../CardIntroContext";
 
 interface AnimatedCardProps {
   children: ReactNode;
   refCb: (el: HTMLDivElement | null) => void;
   isLast: boolean;
+  isLeadingStatic?: boolean;
+  shouldAnimate: boolean;
   range: AnimationRange;
   z: number;
   scrollYProgress: MotionValue<number>;
-  stickyEnabled?: boolean;
   introKey: string;
 }
 
@@ -28,96 +35,360 @@ const AnimatedCard = ({
   children,
   refCb,
   isLast,
+  isLeadingStatic = false,
+  shouldAnimate,
   range,
   z,
   scrollYProgress,
-  stickyEnabled = true,
   introKey,
 }: AnimatedCardProps) => {
   const {
-    emergeStart,
-    emergeEnd,
-    shrinkStart,
+    enterStart,
+    enterEnd,
     revealEnd,
     end,
-    disappearEnd,
     overhang,
     containerHeight,
   } = range;
-  const { hasPlayed, markPlayed } = useCardIntro();
   const prefersReducedMotion = useReducedMotion();
-  const blinkControls = useAnimationControls();
-  const introPlayedRef = useRef(hasPlayed(introKey));
-  const blinkInFlightRef = useRef(false);
+  const introControls = useAnimationControls();
+  const sequenceInFlightRef = useRef(false);
+  const isOpenRef = useRef(false);
+  const runIntroSequenceRef = useRef<() => void>(() => {});
+  const runCloseSequenceRef = useRef<() => void>(() => {});
   const prevProgressRef = useRef(scrollYProgress.get());
+  const prevTopRef = useRef<number | null>(null);
+  const introPreparedRef = useRef(false);
+  const cardElRef = useRef<HTMLDivElement | null>(null);
+
+  const hiddenIntroState = useMemo(
+    () =>
+      ({
+        "--window-border-clip": 43,
+        "--window-bg-opacity": 0,
+        "--window-content-opacity": 0,
+        "--window-content-blur": 7,
+        "--window-content-y": 0,
+      }) as const,
+    []
+  );
+  const openIntroState = useMemo(
+    () =>
+      ({
+        "--window-border-clip": 0,
+        "--window-bg-opacity": 1,
+        "--window-content-opacity": 1,
+        "--window-content-blur": 0,
+        "--window-content-y": 0,
+      }) as const,
+    []
+  );
+  const borderOpenTransition = useMemo(
+    () => ({
+      duration: 1.05,
+      times: [0, 0.42, 1] as number[],
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    }),
+    []
+  );
+  const borderCloseTransition = useMemo(
+    () => ({
+      duration: 0.52,
+      ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
+    }),
+    []
+  );
+  const backgroundOpenTransition = useMemo(
+    () => ({
+      duration: 0.32,
+      ease: "easeOut" as const,
+    }),
+    []
+  );
+  const backgroundCloseTransition = useMemo(
+    () => ({
+      duration: 0.26,
+      ease: "easeOut" as const,
+    }),
+    []
+  );
+  const contentOpenTransition = useMemo(
+    () => ({
+      duration: 0.14,
+      times: [0, 0.34, 0.68, 1] as number[],
+      ease: "easeInOut" as const,
+    }),
+    []
+  );
+  const contentCloseTransition = useMemo(
+    () => ({
+      duration: 0.14,
+      times: [0, 0.6, 1] as number[],
+      ease: "easeInOut" as const,
+    }),
+    []
+  );
+  const getCardTop = useCallback(() => {
+    const el = cardElRef.current;
+    if (!el) return null;
+    return el.getBoundingClientRect().top;
+  }, []);
+  const shouldBeOpenNow = useCallback(() => {
+    const top = getCardTop();
+    if (top === null) return false;
+    const openTriggerY = window.innerHeight * 0.4;
+    return top <= openTriggerY;
+  }, [getCardTop]);
+  const shouldBeClosedNow = useCallback(() => {
+    const top = getCardTop();
+    if (top === null) return false;
+    const closeTriggerY = window.innerHeight * 0.6;
+    return top > closeTriggerY;
+  }, [getCardTop]);
+  const runBorderOpenPhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-border-clip": [43, 43, 0],
+        "--window-bg-opacity": 0,
+        "--window-content-opacity": 0,
+        transition: borderOpenTransition,
+      }),
+    [borderOpenTransition, introControls]
+  );
+  const runBorderClosePhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-border-clip": [0, 43],
+        transition: borderCloseTransition,
+      }),
+    [borderCloseTransition, introControls]
+  );
+  const runBackgroundOpenPhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-bg-opacity": [0, 1],
+        transition: backgroundOpenTransition,
+      }),
+    [backgroundOpenTransition, introControls]
+  );
+  const runBackgroundClosePhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-bg-opacity": [1, 0],
+        transition: backgroundCloseTransition,
+      }),
+    [backgroundCloseTransition, introControls]
+  );
+  const runContentOpenPhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-content-opacity": [0, 1, 0.75, 1],
+        "--window-content-blur": [3, 0, 1, 0],
+        "--window-content-y": 0,
+        transition: contentOpenTransition,
+      }),
+    [contentOpenTransition, introControls]
+  );
+  const runContentClosePhase = useCallback(
+    () =>
+      introControls.start({
+        "--window-content-opacity": [1, 0.2, 0],
+        "--window-content-blur": [0, 1, 3],
+        "--window-content-y": 0,
+        transition: contentCloseTransition,
+      }),
+    [contentCloseTransition, introControls]
+  );
 
   useEffect(() => {
-    introPlayedRef.current = hasPlayed(introKey);
-  }, [hasPlayed, introKey]);
+    const showContent = prefersReducedMotion || !shouldAnimate;
+    if (showContent) {
+      introControls.set(openIntroState);
+      introPreparedRef.current = true;
+      isOpenRef.current = true;
+      return;
+    }
 
-  const easing = [easeOut, easeOut, easeIn, easeOut];
+    introControls.set(hiddenIntroState);
+    introPreparedRef.current = false;
+    isOpenRef.current = false;
+  }, [
+    hiddenIntroState,
+    introControls,
+    openIntroState,
+    prefersReducedMotion,
+    shouldAnimate,
+  ]);
 
-  // ----- Scale -----
-  const scaleInput = isLast
-    ? [emergeStart, emergeEnd]
-    : [emergeStart, emergeEnd, shrinkStart, end, disappearEnd];
-  const scaleOutput = isLast ? [0.99, 1] : [0.99, 1, 1, 0.98, 0.965];
-  const scale = useTransform(scrollYProgress, scaleInput, scaleOutput, {
-    ease: isLast ? easeOut : easing,
-  });
+  const runIntroSequence = useCallback(() => {
+    if (
+      prefersReducedMotion ||
+      !shouldAnimate ||
+      sequenceInFlightRef.current ||
+      isOpenRef.current
+    ) {
+      return;
+    }
+
+    sequenceInFlightRef.current = true;
+    introControls.set(hiddenIntroState);
+
+    void (async () => {
+      try {
+        await runBorderOpenPhase();
+
+        // Midway guard: if user already scrolled back up, reverse only the border.
+        if (shouldBeClosedNow()) {
+          await runBorderClosePhase();
+          introPreparedRef.current = false;
+          isOpenRef.current = false;
+          window.requestAnimationFrame(() => {
+            if (sequenceInFlightRef.current || isOpenRef.current) return;
+            if (shouldBeOpenNow()) {
+              runIntroSequenceRef.current();
+            }
+          });
+          return;
+        }
+
+        await runBackgroundOpenPhase();
+        await runContentOpenPhase();
+
+        introPreparedRef.current = true;
+        isOpenRef.current = true;
+
+        window.requestAnimationFrame(() => {
+          if (sequenceInFlightRef.current || !isOpenRef.current) return;
+          if (shouldBeClosedNow()) {
+            runCloseSequenceRef.current();
+          }
+        });
+      } finally {
+        sequenceInFlightRef.current = false;
+      }
+    })();
+  }, [
+    hiddenIntroState,
+    prefersReducedMotion,
+    runBackgroundOpenPhase,
+    runBorderClosePhase,
+    runBorderOpenPhase,
+    runContentOpenPhase,
+    shouldAnimate,
+    shouldBeClosedNow,
+    shouldBeOpenNow,
+    introControls,
+  ]);
+
+  const runCloseSequence = useCallback(() => {
+    if (
+      prefersReducedMotion ||
+      !shouldAnimate ||
+      sequenceInFlightRef.current ||
+      !isOpenRef.current
+    ) {
+      return;
+    }
+
+    sequenceInFlightRef.current = true;
+
+    void (async () => {
+      try {
+        await runContentClosePhase();
+
+        // Midway guard (symmetric with open path): if user scrolled back into
+        // open territory, abort deeper closing and reopen the window layer.
+        if (shouldBeOpenNow()) {
+          await runBackgroundOpenPhase();
+          introPreparedRef.current = true;
+          isOpenRef.current = true;
+          window.requestAnimationFrame(() => {
+            if (sequenceInFlightRef.current || !isOpenRef.current) return;
+            if (shouldBeClosedNow()) {
+              runCloseSequenceRef.current();
+            }
+          });
+          return;
+        }
+
+        await runBackgroundClosePhase();
+        await runBorderClosePhase();
+
+        introPreparedRef.current = false;
+        isOpenRef.current = false;
+        window.requestAnimationFrame(() => {
+          if (sequenceInFlightRef.current || isOpenRef.current) return;
+          if (shouldBeOpenNow()) {
+            runIntroSequenceRef.current();
+          }
+        });
+      } finally {
+        sequenceInFlightRef.current = false;
+      }
+    })();
+  }, [
+    runBackgroundOpenPhase,
+    prefersReducedMotion,
+    runBackgroundClosePhase,
+    runBorderClosePhase,
+    runContentClosePhase,
+    shouldAnimate,
+    shouldBeClosedNow,
+    shouldBeOpenNow,
+  ]);
+
+  useEffect(() => {
+    runIntroSequenceRef.current = runIntroSequence;
+    runCloseSequenceRef.current = runCloseSequence;
+  }, [runCloseSequence, runIntroSequence]);
+
+  const scale = 1;
+  const epsilon = 0.0001;
+  const safeEnterEnd = Math.max(enterEnd, enterStart + epsilon);
+  const safeEnd = Math.max(end, safeEnterEnd + epsilon);
+  const safeExitStart = Math.min(
+    Math.max(Math.max(revealEnd, safeEnd - 0.08), safeEnterEnd + epsilon),
+    safeEnd - epsilon
+  );
+
+  useEffect(() => {
+    if (prefersReducedMotion || !shouldAnimate || sequenceInFlightRef.current) return;
+    const el = cardElRef.current;
+    if (!el) return;
+    const openTriggerY = window.innerHeight * 0.4;
+    const top = el.getBoundingClientRect().top;
+    prevTopRef.current = top;
+
+    if (top <= openTriggerY) {
+      runIntroSequence();
+    }
+  }, [prefersReducedMotion, runIntroSequence, shouldAnimate]);
 
   // ----- Base Y (translateY) -----
   const baseY = useTransform(scrollYProgress, (latest) => {
     if (isLast || containerHeight === 0) return 0;
 
-    // 1. Card emerging - pinned in place
-    if (latest < emergeEnd) return 0;
+    // 1. Card entering - pinned in place
+    if (latest < safeEnterEnd) return 0;
 
     // 2. Reveal the bottom of the card by translating exactly the overhang amount
-    if (latest < revealEnd) {
-      const progress = (latest - emergeEnd) / (revealEnd - emergeEnd);
+    if (latest < revealEnd && revealEnd > safeEnterEnd) {
+      const progress = (latest - safeEnterEnd) / (revealEnd - safeEnterEnd);
       return -progress * overhang;
     }
 
-    // 3. Parallax section – smoothly transition the scroll ratio from 1 → 0.2 over `transitionPx`
-    const scrollPx = (latest - revealEnd) * containerHeight; // pixels scrolled past revealEnd
-
-    const parallaxFactor = 0.2; // final ratio after transition
-    // Keep transition proportional to section length so it remains consistent
-    // after breakpoint retuning in the wrapper.
-    const transitionPx = Math.max(
-      120,
-      Math.min(320, containerHeight * 0.12)
-    );
-
-    if (scrollPx <= transitionPx) {
-      // Ratio decreases linearly from 1 to parallaxFactor across the transition distance
-      // Integral of the varying ratio gives smooth displacement:
-      // displacement = scrollPx - (1 - parallaxFactor) * scrollPx^2 / (2 * transitionPx)
-      const easedTranslation =
-        -overhang -
-        (scrollPx -
-          ((1 - parallaxFactor) * (scrollPx * scrollPx)) / (2 * transitionPx));
-      return easedTranslation;
-    }
-
-    // After the transition distance, continue at constant parallaxFactor
-    const precomputedOffset = (transitionPx * (1 + parallaxFactor)) / 2; // integral over the transition segment
-    return (
-      -overhang - precomputedOffset - (scrollPx - transitionPx) * parallaxFactor
-    );
+    // 3. Hold at full reveal until the next sticky card takes over.
+    return -overhang;
   });
 
-  // ----- Presentation Y: mirror emerge/exit on top of sticky math -----
-  const presentationYInput = isLast
-    ? [emergeStart, emergeEnd]
-    : [emergeStart, emergeEnd, shrinkStart, disappearEnd];
-  const presentationYOutput = isLast ? [18, 0] : [18, 0, 0, -28];
+  // ----- Presentation Y: small settle movement during entry -----
+  const presentationYInput = [enterStart, safeEnterEnd];
+  const presentationYOutput = [10, 0];
   const presentationY = useTransform(
     scrollYProgress,
     presentationYInput,
     presentationYOutput,
-    { ease: isLast ? easeOut : [easeOut, easeOut, easeIn] }
+    { ease: easeOut }
   );
   const composedY = useTransform([baseY, presentationY], (latest) => {
     const [base, extra] = latest as number[];
@@ -125,77 +396,94 @@ const AnimatedCard = ({
   });
 
   // ----- Opacity -----
-  const opacityInput = isLast
-    ? [emergeStart, emergeEnd]
-    : [emergeStart, emergeEnd, shrinkStart, end, disappearEnd];
-  // Keep cards fully readable before/through emerge; reserve dimming for exit.
-  const opacityOutput = isLast ? [1, 1] : [1, 1, 1, 0.8, 0.62];
-  const opacity = useTransform(scrollYProgress, opacityInput, opacityOutput, {
-    ease: isLast ? easeOut : easing,
+  const eased = (value: number) => easeInOut(Math.min(1, Math.max(0, value)));
+  const opacity = useTransform(scrollYProgress, (latest) => {
+    if (!shouldAnimate) return 1;
+    // Keep shell opacity stable through intro; only fade on exit.
+    if (latest <= safeExitStart) return 1;
+    if (latest < safeEnd) {
+      const progress = (latest - safeExitStart) / (safeEnd - safeExitStart);
+      return 1 - eased(progress);
+    }
+    return 0;
   });
-
-  useEffect(() => {
-    blinkControls.set({ opacity: 0 });
-  }, [blinkControls]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const previous = prevProgressRef.current;
     prevProgressRef.current = latest;
 
-    if (isLast || prefersReducedMotion) return;
+    if (prefersReducedMotion || !shouldAnimate) return;
+
+    const el = cardElRef.current;
+    if (!el) return;
+    const openTriggerY = window.innerHeight * 0.4;
+    const closeTriggerY = window.innerHeight * 0.6;
+    const currentTop = el.getBoundingClientRect().top;
+    const previousTop = prevTopRef.current ?? currentTop;
+    prevTopRef.current = currentTop;
 
     const isDownward = latest > previous;
-    const crossedIntoEmerge = previous < emergeStart && latest >= emergeStart;
+    const isUpward = latest < previous;
+    const crossedIntoEntry =
+      previousTop > openTriggerY && currentTop <= openTriggerY;
+    const crossedBackAboveEntry =
+      previousTop <= closeTriggerY && currentTop > closeTriggerY;
 
-    if (!isDownward || !crossedIntoEmerge) return;
+    if (isDownward && crossedIntoEntry) {
+      runIntroSequence();
+      return;
+    }
 
-    if (introPlayedRef.current || blinkInFlightRef.current) return;
-
-    blinkInFlightRef.current = true;
-    introPlayedRef.current = true;
-    markPlayed(introKey);
-
-    void blinkControls
-      .start({
-        opacity: [0, 0.9, 0.15, 1, 0],
-        transition: {
-          duration: 0.36,
-          ease: "easeInOut",
-          times: [0, 0.2, 0.45, 0.7, 1],
-        },
-      })
-      .finally(() => {
-        blinkInFlightRef.current = false;
-      });
+    if (isUpward && crossedBackAboveEntry) {
+      runCloseSequence();
+    }
   });
 
-  const cardClassName = isLast ? styles.lastCard : styles.card;
-  const composedClassName = stickyEnabled
-    ? cardClassName
-    : `${cardClassName} ${styles.nonSticky}`;
+  const cardClassName = isLeadingStatic
+    ? styles.leadingStaticCard
+    : isLast
+      ? styles.lastCard
+      : styles.card;
+  const introStyle: CSSProperties = prefersReducedMotion || !shouldAnimate
+    ? ({
+        "--window-border-clip": 0,
+        "--window-bg-opacity": 1,
+        "--window-content-opacity": 1,
+        "--window-content-blur": 0,
+        "--window-content-y": 0,
+      } as CSSProperties)
+    : ({
+        "--window-border-clip": 43,
+        "--window-bg-opacity": 0,
+        "--window-content-opacity": 0,
+        "--window-content-blur": 7,
+        "--window-content-y": 0,
+      } as CSSProperties);
 
   return (
     <motion.div
-      ref={refCb}
+      ref={(el) => {
+        cardElRef.current = el;
+        refCb(el);
+      }}
       style={{
         scale,
-        y: stickyEnabled ? composedY : 0,
+        y: 0,
         opacity,
         zIndex: z,
-        marginTop: z > 0 ? "-36px" : 0,
+        marginTop: 0,
       }}
-      className={composedClassName}
+      className={cardClassName}
     >
       <div className={styles.cardInner}>
-        {children}
-        {!prefersReducedMotion ? (
-          <motion.div
-            className={styles.hudBlinkOverlay}
-            animate={blinkControls}
-            initial={{ opacity: 0 }}
-            aria-hidden
-          />
-        ) : null}
+        <motion.div
+          className={styles.contentRevealLayer}
+          style={introStyle}
+          animate={introControls}
+          initial={false}
+        >
+          {children}
+        </motion.div>
       </div>
     </motion.div>
   );

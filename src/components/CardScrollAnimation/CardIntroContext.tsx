@@ -13,6 +13,10 @@ interface CardIntroContextValue {
 }
 
 const CardIntroContext = createContext<CardIntroContextValue | null>(null);
+const fallbackCardIntroContext: CardIntroContextValue = {
+  hasPlayed: () => false,
+  markPlayed: () => {},
+};
 
 export const CardIntroProvider = ({ children }: PropsWithChildren) => {
   const playedRef = useRef<Set<string>>(new Set());
@@ -42,7 +46,8 @@ export const useCardIntro = (): CardIntroContextValue => {
   const context = useContext(CardIntroContext);
 
   if (!context) {
-    throw new Error("useCardIntro must be used within CardIntroProvider.");
+    // Allow isolated renders (e.g. editors/previews) without crashing.
+    return fallbackCardIntroContext;
   }
 
   return context;

@@ -2,6 +2,7 @@ import {
   useRef,
   useState,
   useLayoutEffect,
+  useEffect,
   Children,
   isValidElement,
   useId,
@@ -14,11 +15,13 @@ import styles from "./CardScrollAnimationWrapper.module.scss";
 
 interface CardScrollAnimationWrapperProps {
   children: ReactNode;
+  numFirstElements?: number;
   numLastElements?: number;
 }
 
 const CardScrollAnimationWrapper = ({
   children,
+  numFirstElements = 0,
   numLastElements = 1,
 }: CardScrollAnimationWrapperProps) => {
   const clamp = (value: number, min: number, max: number) =>
@@ -27,20 +30,27 @@ const CardScrollAnimationWrapper = ({
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const wrapperId = useId();
   const { pathname } = useRouter();
+  const childArray = Children.toArray(children);
+  const firstAnimatedIndex = Math.min(
+    Math.max(numFirstElements, 0),
+    childArray.length
+  );
+  const lastAnimatedIndex = Math.max(
+    firstAnimatedIndex - 1,
+    childArray.length - Math.max(numLastElements, 0) - 1
+  );
+  const hasAnimatedCards = firstAnimatedIndex <= lastAnimatedIndex;
   const [animationRanges, setAnimationRanges] = useState<
     Array<{
       start: number;
       end: number;
-      disappearEnd: number;
-      emergeStart: number;
-      emergeEnd: number;
-      shrinkStart: number;
+      enterStart: number;
+      enterEnd: number;
       revealEnd: number;
       overhang: number;
       containerHeight: number;
     }>
   >([]);
-  const [isMeasuring, setIsMeasuring] = useState(true);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -50,21 +60,9 @@ const CardScrollAnimationWrapper = ({
   useLayoutEffect(() => {
     const calculateRanges = () => {
       if (!containerRef.current) return;
-      setIsMeasuring(true);
 
       const doCalc = () => {
         if (!containerRef.current) return;
-
-        const lastCardEl = cardRefs.current[cardRefs.current.length - 1];
-        if (lastCardEl) {
-          // Ensure we always reset the padding / margin so values don't become stale
-          const padding = Math.max(
-            0,
-            window.innerHeight - lastCardEl.offsetHeight
-          );
-          containerRef.current.style.paddingBottom = `${padding}px`;
-          containerRef.current.style.marginBottom = `-${padding}px`;
-        }
 
         const containerHeight =
           containerRef.current.scrollHeight - window.innerHeight;
@@ -72,19 +70,15 @@ const CardScrollAnimationWrapper = ({
 
         // Breakpoints are tuned per viewport so timing scales naturally across
         // screen sizes instead of inheriting fixed pixel values from old layouts.
-        const emergeLeadPx = clamp(viewportHeight * 0.32, 180, 380);
-        const disappearTailPx = clamp(viewportHeight * 0.18, 96, 220);
-        const shrinkLeadPx = clamp(viewportHeight * 0.35, 180, 420);
+        const enterLeadPx = clamp(viewportHeight * 0.28, 140, 340);
 
         const ranges = cardRefs.current.map((ref, index) => {
           if (!ref || containerHeight <= 0)
             return {
               start: 0,
               end: 0,
-              disappearEnd: 0,
-              emergeStart: 0,
-              emergeEnd: 0,
-              shrinkStart: 0,
+              enterStart: 0,
+              enterEnd: 0,
               revealEnd: 0,
               overhang: 0,
               containerHeight: 0,
@@ -99,14 +93,11 @@ const CardScrollAnimationWrapper = ({
           const start = cardTop / containerHeight;
           const end = nextCardTop / containerHeight;
 
-          // Emerge starts when the top of the previous card hits the top of the viewport.
-          const emergeStart = start - emergeLeadPx / containerHeight;
+          // Entry starts before the card reaches the sticky anchor.
+          const enterStart = start - enterLeadPx / containerHeight;
 
-          // Emerge ends when the card reaches the sticky anchor.
-          const emergeEnd = start;
-
-          // Keep the card visible slightly beyond the main handoff.
-          const disappearEnd = end + disappearTailPx / containerHeight;
+          // Entry ends when the card reaches the sticky anchor.
+          const enterEnd = start;
 
           // Amount the card exceeds the viewport height. This distance will be
           // used to translate the sticky card upwards so the bottom of the card
@@ -117,20 +108,13 @@ const CardScrollAnimationWrapper = ({
           const overhangNormalized = overhang / containerHeight;
 
           // Translation ends after the scroll distance equal to overhang.
-          const revealEnd = emergeEnd + overhangNormalized;
-
-          // Exit starts before the end, scaled to viewport size.
-          const shrinkStartRaw = end - shrinkLeadPx / containerHeight;
-          // Ensure shrink does not start before we've finished revealing the card bottom.
-          const shrinkStart = Math.max(shrinkStartRaw, revealEnd);
+          const revealEnd = enterEnd + overhangNormalized;
 
           return {
             start,
             end,
-            disappearEnd,
-            emergeStart,
-            emergeEnd,
-            shrinkStart,
+            enterStart,
+            enterEnd,
             revealEnd,
             overhang,
             containerHeight,
@@ -138,7 +122,6 @@ const CardScrollAnimationWrapper = ({
         });
 
         setAnimationRanges(ranges);
-        setIsMeasuring(false);
       };
 
       // Defer to next frame so `.nonSticky` class is applied before measuring
@@ -181,22 +164,24 @@ const CardScrollAnimationWrapper = ({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("load", calculateRanges);
     };
-  }, []);
+  }, [childArray.length]);
+
+  useEffect(() => {
+    // Staged/snap-like scroll interception disabled: use native page scroll.
+    return undefined;
+  }, [firstAnimatedIndex, hasAnimatedCards, lastAnimatedIndex]);
 
   // Define a fallback range so that AnimatedCard always receives a full object
   const defaultRange: AnimationRange = {
     start: 0,
     end: 0,
-    disappearEnd: 0,
-    emergeStart: 0,
-    emergeEnd: 0,
-    shrinkStart: 0,
+    enterStart: 0,
+    enterEnd: 0,
     revealEnd: 0,
     overhang: 0,
     containerHeight: 0,
   };
 
-  const childArray = Children.toArray(children);
   const childKeys = childArray.map((child, index) => {
     const stableChildKey = isValidElement(child) ? child.key : null;
     return stableChildKey === null ? String(index) : String(stableChildKey);
@@ -209,20 +194,23 @@ const CardScrollAnimationWrapper = ({
         // Fallback to index only if no key is available from Builder children.
         const introKey = `${pathname}:${wrapperId}:${childKeys[index]}`;
 
+        const isLeadingStatic = index < firstAnimatedIndex;
+        const isTrailingStatic = index >= childArray.length - numLastElements;
+        const shouldAnimate = !isLeadingStatic && !isTrailingStatic;
+
         return (
           <AnimatedCard
             key={index}
             refCb={(el: HTMLDivElement | null) => {
               cardRefs.current[index] = el;
             }}
-            isLast={index >= childArray.length - numLastElements}
+            isLast={isTrailingStatic}
+            isLeadingStatic={isLeadingStatic}
             range={animationRanges[index] ?? defaultRange}
             z={index}
             scrollYProgress={scrollYProgress}
-            stickyEnabled={
-              !isMeasuring && (animationRanges[index]?.containerHeight ?? 0) > 0
-            }
             introKey={introKey}
+            shouldAnimate={shouldAnimate}
           >
             {child}
           </AnimatedCard>
@@ -236,10 +224,8 @@ const CardScrollAnimationWrapper = ({
 export interface AnimationRange {
   start: number;
   end: number;
-  disappearEnd: number;
-  emergeStart: number;
-  emergeEnd: number;
-  shrinkStart: number;
+  enterStart: number;
+  enterEnd: number;
   revealEnd: number;
   overhang: number;
   containerHeight: number;

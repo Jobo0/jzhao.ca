@@ -5,8 +5,8 @@
 }
 
 .card {
-  position: sticky;
-  top: 0px;
+  position: relative;
+  min-height: 100vh;
   transform-origin: center top;
   // Target nested element with class containing "contentCard"
   & div > [class*="contentCard"] {
@@ -17,6 +17,12 @@
 
 .lastCard {
   position: relative;
+  min-height: 100vh;
+}
+
+.leadingStaticCard {
+  position: relative;
+  min-height: auto;
 }
 
 .cardInner {
@@ -24,21 +30,103 @@
   isolation: isolate;
 }
 
-.hudBlinkOverlay {
+.contentRevealLayer {
+  position: relative;
+  z-index: 2;
+
+  :global([data-window-card-root]) {
+    position: relative;
+    border-top-color: transparent;
+    background: transparent;
+    opacity: 1;
+    overflow: hidden;
+  }
+
+  :global([data-window-card-root])::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: variables.$color-neutral-300;
+    clip-path: inset(
+      0 calc(var(--window-border-clip, 0) * 1%) 0 calc(var(--window-border-clip, 0) * 1%)
+    );
+    opacity: 1;
+    pointer-events: none;
+    z-index: 3;
+    will-change: clip-path, opacity;
+  }
+
+  :global([data-window-card-root])::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(variables.$color-neutral-000, 0.03) 0%,
+      rgba(variables.$color-neutral-000, 0.01) 40%,
+      rgba(variables.$color-neutral-000, 0) 100%
+    );
+    opacity: var(--window-bg-opacity, 1);
+    pointer-events: none;
+    z-index: 1;
+    will-change: opacity;
+  }
+
+  :global([data-window-card-root] > *) {
+    opacity: var(--window-content-opacity, 1);
+    filter: blur(calc(var(--window-content-blur, 0) * 1px));
+    transform: translateY(calc(var(--window-content-y, 0) * 1px));
+  }
+}
+
+.panelExpandOverlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
+  border-radius: inherit;
+  overflow: hidden;
   background: linear-gradient(
-    135deg,
-    rgba(variables.$color-link-600, 0.22) 0%,
-    rgba(variables.$color-brand-600, 0.26) 40%,
-    rgba(variables.$color-tint-light-70, 0.12) 100%
+    115deg,
+    rgba(variables.$color-tint-light-70, 0.64) 0%,
+    rgba(variables.$color-link-600, 0.5) 38%,
+    rgba(variables.$color-brand-600, 0.44) 70%,
+    rgba(variables.$color-tint-light-70, 0.18) 100%
   );
   box-shadow:
-    inset 0 0 0 1px rgba(variables.$color-tint-light-70, 0.25),
-    0 0 28px rgba(variables.$color-link-600, 0.16);
+    inset 0 0 0 1px rgba(variables.$color-tint-light-70, 0.42),
+    inset 0 0 40px rgba(variables.$color-link-600, 0.35),
+    0 0 40px rgba(variables.$color-link-600, 0.24);
   mix-blend-mode: screen;
+  transform-origin: center center;
+  border-top: 2px solid rgba(variables.$color-border, 0.72);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(variables.$color-tint-light-70, 0.2) 0px,
+      rgba(variables.$color-tint-light-70, 0.2) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    opacity: 0.68;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1px solid rgba(variables.$color-tint-light-70, 0.62);
+    box-shadow:
+      0 0 14px rgba(variables.$color-link-600, 0.4),
+      inset 0 0 18px rgba(variables.$color-brand-600, 0.22);
+  }
 }
 
 // Temporarily disable sticky during measurement to avoid capturing pinned offsets.
