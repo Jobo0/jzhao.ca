@@ -68,10 +68,11 @@ const CardScrollAnimationWrapper = ({
 
       const doCalc = () => {
         if (!containerRef.current) return;
+        const containerEl = containerRef.current;
+        const viewportHeight = window.innerHeight;
 
         const containerHeight =
-          containerRef.current.scrollHeight - window.innerHeight;
-        const viewportHeight = window.innerHeight;
+          containerEl.scrollHeight - viewportHeight;
 
         // Breakpoints are tuned per viewport so timing scales naturally across
         // screen sizes instead of inheriting fixed pixel values from old layouts.
@@ -146,6 +147,7 @@ const CardScrollAnimationWrapper = ({
     };
 
     if (!containerRef.current) return;
+    const observedContainer = containerRef.current;
 
     // Initial calculation
     calculateRanges();
@@ -154,7 +156,7 @@ const CardScrollAnimationWrapper = ({
     const resizeObserver = new ResizeObserver(() => {
       calculateRanges();
     });
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(observedContainer);
 
     // Debounced handler for window resize events
     const resizeTimeoutRef = { current: null as number | null };

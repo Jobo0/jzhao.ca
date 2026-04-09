@@ -357,6 +357,8 @@ const AnimatedCard = ({
 
   const scale = 1;
   const epsilon = 0.0001;
+  const parallaxFactor = 0.2;
+  const parallaxTransitionPx = 296;
   const safeEnterEnd = Math.max(enterEnd, enterStart + epsilon);
   const safeEnd = Math.max(end, safeEnterEnd + epsilon);
   const safeExitStart = Math.min(
@@ -394,7 +396,29 @@ const AnimatedCard = ({
       return -progress * overhang;
     }
 
-    // 3. Hold at full reveal until the next sticky card takes over.
+    // 3. After full reveal, non-final animated cards continue with a smooth
+    // parallax drift (velocity ratio eases 1.0 -> 0.2 over 296px).
+    if (!isLastAnimated) {
+      const scrollPx = Math.max(0, (latest - revealEnd) * containerHeight);
+
+      if (scrollPx <= parallaxTransitionPx) {
+        const displacement =
+          scrollPx -
+          ((1 - parallaxFactor) * scrollPx * scrollPx) /
+            (2 * parallaxTransitionPx);
+        return -overhang - displacement;
+      }
+
+      const precomputedOffset =
+        (parallaxTransitionPx * (1 + parallaxFactor)) / 2;
+      return (
+        -overhang -
+        precomputedOffset -
+        (scrollPx - parallaxTransitionPx) * parallaxFactor
+      );
+    }
+
+    // 4. Final animated card holds at full reveal for footer handoff.
     return -overhang;
   });
 
@@ -411,6 +435,27 @@ const AnimatedCard = ({
     const [base, extra] = latest as number[];
     return base + extra;
   });
+  const depthProgress = useTransform(scrollYProgress, (latest) => {
+    if (
+      prefersReducedMotion ||
+      !shouldAnimate ||
+      isLast ||
+      isLastAnimated ||
+      containerHeight === 0
+    ) {
+      return 0;
+    }
+
+    if (latest <= revealEnd) return 0;
+
+    const scrollPx = Math.max(0, (latest - revealEnd) * containerHeight);
+    if (scrollPx <= parallaxTransitionPx) {
+      return Math.min(1, scrollPx / parallaxTransitionPx);
+    }
+    return 1;
+  });
+  const depthScale = useTransform(depthProgress, (progress) => 1 - progress * 0.05);
+  const depthTiltX = useTransform(depthProgress, (progress) => progress * 3);
 
   // ----- Opacity -----
   const eased = (value: number) => easeInOut(Math.min(1, Math.max(0, value)));
@@ -509,8 +554,10 @@ const AnimatedCard = ({
         refCb(el);
       }}
       style={{
-        scale,
+        scale: depthScale,
         y: shouldAnimate ? composedY : 0,
+        transformPerspective: 1200,
+        rotateX: depthTiltX,
         opacity,
         filter: shouldAnimate && !hasFadeRange ? exitBlurFilter : "blur(0px)",
         zIndex: z,
