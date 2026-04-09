@@ -1,9 +1,19 @@
 import React, { PropsWithChildren, useEffect, useRef } from "react";
 import styles from "./PageBackgroundLayout.module.scss";
 
-const PageBackgroundLayout: React.FC<PropsWithChildren> = ({ children }) => {
+type PageBackgroundMode = "scroll" | "fixed";
+
+type PageBackgroundLayoutProps = PropsWithChildren<{
+  backgroundMode?: PageBackgroundMode;
+}>;
+
+const PageBackgroundLayout: React.FC<PageBackgroundLayoutProps> = ({
+  children,
+  backgroundMode = "scroll",
+}) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isFixedBackground = backgroundMode === "fixed";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,18 +29,21 @@ const PageBackgroundLayout: React.FC<PropsWithChildren> = ({ children }) => {
       const root = rootRef.current;
       if (!root) return;
       const rect = root.getBoundingClientRect();
+      const width = isFixedBackground ? window.innerWidth : rect.width;
+      const height = isFixedBackground ? window.innerHeight : rect.height;
       // Reset transform before resizing to avoid compound scaling
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      canvas.width = Math.floor(rect.width * dpr);
-      canvas.height = Math.floor(rect.height * dpr);
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       ctx.scale(dpr, dpr);
     };
 
     resizeToRoot();
     const ro = new ResizeObserver(resizeToRoot);
-    if (rootRef.current) ro.observe(rootRef.current);
+    if (rootRef.current && !isFixedBackground) ro.observe(rootRef.current);
+    window.addEventListener("resize", resizeToRoot);
 
     type Particle = { x: number; y: number; vx: number; vy: number; r: number; o: number };
     const particles: Particle[] = [];
@@ -38,7 +51,8 @@ const PageBackgroundLayout: React.FC<PropsWithChildren> = ({ children }) => {
       const root = rootRef.current;
       if (!root) return 40;
       const rect = root.getBoundingClientRect();
-      return Math.floor((rect.width * rect.height) / 24000);
+      const baseCount = Math.floor((rect.width * rect.height) / 24000);
+      return isFixedBackground ? Math.max(1, Math.floor(baseCount / 3)) : baseCount;
     };
     const targetCount = getTargetCount();
     for (let i = 0; i < targetCount; i++) {
@@ -83,15 +97,21 @@ const PageBackgroundLayout: React.FC<PropsWithChildren> = ({ children }) => {
       isRunning = false;
       cancelAnimationFrame(animationFrame);
       ro.disconnect();
+      window.removeEventListener("resize", resizeToRoot);
     };
-  }, []);
+  }, [isFixedBackground]);
 
   return (
     <div ref={rootRef} className={styles.root}>
-      {/* Grid scrolls with content (absolute inside root) */}
-      <div className={styles.grid} aria-hidden />
-      {/* Particles now scroll with content as well */}
-      <canvas ref={canvasRef} className={styles.canvas} aria-hidden />
+      <div
+        className={`${styles.grid} ${isFixedBackground ? styles.gridFixed : styles.gridScroll}`}
+        aria-hidden
+      />
+      <canvas
+        ref={canvasRef}
+        className={`${styles.canvas} ${isFixedBackground ? styles.canvasFixed : styles.canvasScroll}`}
+        aria-hidden
+      />
       <div className={styles.content}>{children}</div>
     </div>
   );

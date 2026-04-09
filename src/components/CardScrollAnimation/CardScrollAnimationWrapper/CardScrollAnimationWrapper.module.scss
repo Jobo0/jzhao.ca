@@ -25,6 +25,11 @@
   min-height: auto;
 }
 
+.stickyCard {
+  position: sticky;
+  top: 0;
+}
+
 .cardInner {
   position: relative;
   isolation: isolate;
@@ -39,7 +44,7 @@
     border-top-color: transparent;
     background: transparent;
     opacity: 1;
-    overflow: hidden;
+    overflow: visible;
   }
 
   :global([data-window-card-root])::before {
@@ -49,13 +54,22 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: variables.$color-neutral-300;
+    background: linear-gradient(
+      90deg,
+      rgba(variables.$color-neutral-300, 0.9) 0%,
+      rgba(variables.$color-neutral-100, 0.90) 50%,
+      rgba(variables.$color-neutral-300, 0.9) 100%
+    );
     clip-path: inset(
       0 calc(var(--window-border-clip, 0) * 1%) 0 calc(var(--window-border-clip, 0) * 1%)
     );
     opacity: 1;
     pointer-events: none;
     z-index: 3;
+    box-shadow:
+      0 0 6px rgba(variables.$color-neutral-300, 0.46),
+      0 3px 14px rgba(variables.$color-neutral-300, 0.28),
+      0 8px 26px rgba(variables.$color-neutral-300, 0.16);
     will-change: clip-path, opacity;
   }
 

@@ -1,3 +1,4 @@
+@use "../../styles/mixins" as mixins;
 @use "../../styles/variables" as v;
 
 .root {
@@ -7,6 +8,12 @@
 .content {
   padding: 280px 0;
   will-change: transform;
+}
+
+@include mixins.respond-height-sm {
+  .content {
+    padding: 200px 0;
+  }
 }
 
 .title {

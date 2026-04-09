@@ -44,6 +44,8 @@ const CardScrollAnimationWrapper = ({
     Array<{
       start: number;
       end: number;
+      reachViewport60: number;
+      reachViewport30: number;
       enterStart: number;
       enterEnd: number;
       revealEnd: number;
@@ -51,6 +53,7 @@ const CardScrollAnimationWrapper = ({
       containerHeight: number;
     }>
   >([]);
+  const [stickyEnabled, setStickyEnabled] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -77,6 +80,8 @@ const CardScrollAnimationWrapper = ({
             return {
               start: 0,
               end: 0,
+              reachViewport60: 0,
+              reachViewport30: 0,
               enterStart: 0,
               enterEnd: 0,
               revealEnd: 0,
@@ -92,6 +97,8 @@ const CardScrollAnimationWrapper = ({
 
           const start = cardTop / containerHeight;
           const end = nextCardTop / containerHeight;
+          const reachViewport60 = start - (viewportHeight * 0.6) / containerHeight;
+          const reachViewport30 = start - (viewportHeight * 0.3) / containerHeight;
 
           // Entry starts before the card reaches the sticky anchor.
           const enterStart = start - enterLeadPx / containerHeight;
@@ -113,6 +120,8 @@ const CardScrollAnimationWrapper = ({
           return {
             start,
             end,
+            reachViewport60,
+            reachViewport30,
             enterStart,
             enterEnd,
             revealEnd,
@@ -122,8 +131,12 @@ const CardScrollAnimationWrapper = ({
         });
 
         setAnimationRanges(ranges);
+        requestAnimationFrame(() => {
+          setStickyEnabled(true);
+        });
       };
 
+      setStickyEnabled(false);
       // Defer to next frame so `.nonSticky` class is applied before measuring
       requestAnimationFrame(doCalc);
     };
@@ -175,12 +188,17 @@ const CardScrollAnimationWrapper = ({
   const defaultRange: AnimationRange = {
     start: 0,
     end: 0,
+    reachViewport60: 0,
+    reachViewport30: 0,
     enterStart: 0,
     enterEnd: 0,
     revealEnd: 0,
     overhang: 0,
     containerHeight: 0,
   };
+  const firstAnimatedRange = hasAnimatedCards
+    ? (animationRanges[firstAnimatedIndex] ?? defaultRange)
+    : defaultRange;
 
   const childKeys = childArray.map((child, index) => {
     const stableChildKey = isValidElement(child) ? child.key : null;
@@ -197,6 +215,7 @@ const CardScrollAnimationWrapper = ({
         const isLeadingStatic = index < firstAnimatedIndex;
         const isTrailingStatic = index >= childArray.length - numLastElements;
         const shouldAnimate = !isLeadingStatic && !isTrailingStatic;
+        const isHero = isLeadingStatic && index === 0;
 
         return (
           <AnimatedCard
@@ -206,6 +225,10 @@ const CardScrollAnimationWrapper = ({
             }}
             isLast={isTrailingStatic}
             isLeadingStatic={isLeadingStatic}
+            isSticky={isHero}
+            stickyEnabled={stickyEnabled}
+            fadeOutStart={isHero ? firstAnimatedRange.reachViewport60 : undefined}
+            fadeOutEnd={isHero ? firstAnimatedRange.reachViewport30 : undefined}
             range={animationRanges[index] ?? defaultRange}
             z={index}
             scrollYProgress={scrollYProgress}
@@ -224,6 +247,8 @@ const CardScrollAnimationWrapper = ({
 export interface AnimationRange {
   start: number;
   end: number;
+  reachViewport60: number;
+  reachViewport30: number;
   enterStart: number;
   enterEnd: number;
   revealEnd: number;

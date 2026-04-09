@@ -5,19 +5,10 @@
   position: relative;
   min-height: 100vh;
   background: v.$color-neutral-1000;
-  //overflow-x: clip;
-}
-
-.animated {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0; // above background, below content
 }
 
 // Faint grid overlay using pure CSS (no image)
 .grid {
-  position: absolute;
   inset: 0;
   pointer-events: none;
   background-image:
@@ -36,10 +27,25 @@
 
 // Canvas for subtle particles
 .canvas {
-  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1; // above grid
+}
+
+.gridScroll {
+  position: absolute;
+}
+
+.canvasScroll {
+  position: absolute;
+}
+
+.gridFixed {
+  position: fixed;
+}
+
+.canvasFixed {
+  position: fixed;
 }
 
 .content {

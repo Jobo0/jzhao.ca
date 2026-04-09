@@ -24,6 +24,10 @@ interface AnimatedCardProps {
   refCb: (el: HTMLDivElement | null) => void;
   isLast: boolean;
   isLeadingStatic?: boolean;
+  isSticky?: boolean;
+  stickyEnabled?: boolean;
+  fadeOutStart?: number;
+  fadeOutEnd?: number;
   shouldAnimate: boolean;
   range: AnimationRange;
   z: number;
@@ -36,6 +40,10 @@ const AnimatedCard = ({
   refCb,
   isLast,
   isLeadingStatic = false,
+  isSticky = false,
+  stickyEnabled = true,
+  fadeOutStart,
+  fadeOutEnd,
   shouldAnimate,
   range,
   z,
@@ -350,6 +358,10 @@ const AnimatedCard = ({
     Math.max(Math.max(revealEnd, safeEnd - 0.08), safeEnterEnd + epsilon),
     safeEnd - epsilon
   );
+  const hasFadeRange =
+    fadeOutStart !== undefined &&
+    fadeOutEnd !== undefined &&
+    fadeOutEnd > fadeOutStart;
 
   useEffect(() => {
     if (prefersReducedMotion || !shouldAnimate || sequenceInFlightRef.current) return;
@@ -398,6 +410,15 @@ const AnimatedCard = ({
   // ----- Opacity -----
   const eased = (value: number) => easeInOut(Math.min(1, Math.max(0, value)));
   const opacity = useTransform(scrollYProgress, (latest) => {
+    if (hasFadeRange) {
+      if (latest <= fadeOutStart) return 1;
+      if (latest < fadeOutEnd) {
+        const progress = (latest - fadeOutStart) / (fadeOutEnd - fadeOutStart);
+        return 1 - eased(progress);
+      }
+      return 0;
+    }
+
     if (!shouldAnimate) return 1;
     // Keep shell opacity stable through intro; only fade on exit.
     if (latest <= safeExitStart) return 1;
@@ -444,6 +465,11 @@ const AnimatedCard = ({
     : isLast
       ? styles.lastCard
       : styles.card;
+  const stickyClassName = isSticky
+    ? stickyEnabled
+      ? styles.stickyCard
+      : styles.nonSticky
+    : "";
   const introStyle: CSSProperties = prefersReducedMotion || !shouldAnimate
     ? ({
         "--window-border-clip": 0,
@@ -473,7 +499,7 @@ const AnimatedCard = ({
         zIndex: z,
         marginTop: 0,
       }}
-      className={cardClassName}
+      className={`${cardClassName} ${stickyClassName}`}
     >
       <div className={styles.cardInner}>
         <motion.div
