@@ -63,6 +63,8 @@ const AnimatedCard = ({
     end,
     overhang,
     containerHeight,
+    openTriggerProgress,
+    closeTriggerProgress,
   } = range;
   const prefersReducedMotion = useReducedMotion();
   const introControls = useAnimationControls();
@@ -71,9 +73,11 @@ const AnimatedCard = ({
   const runIntroSequenceRef = useRef<() => void>(() => {});
   const runCloseSequenceRef = useRef<() => void>(() => {});
   const prevProgressRef = useRef(scrollYProgress.get());
-  const prevTopRef = useRef<number | null>(null);
   const introPreparedRef = useRef(false);
-  const cardElRef = useRef<HTMLDivElement | null>(null);
+  // Track whether this card is currently within the exit-blur progress window
+  // so we can conditionally attach the `filter` style and avoid promoting every
+  // card to a permanent compositor layer for `blur(0px)`.
+  const [isExitBlurring, setIsExitBlurring] = useState(false);
   // Release last animated card from sticky once it is fully revealed, so the
   // footer pushes it up naturally regardless of footer height vs. overhang.
   const [isReleased, setIsReleased] = useState(false);
@@ -145,23 +149,15 @@ const AnimatedCard = ({
     }),
     []
   );
-  const getCardTop = useCallback(() => {
-    const el = cardElRef.current;
-    if (!el) return null;
-    return el.getBoundingClientRect().top;
-  }, []);
+  // Evaluate open/close state from the scroll progress value instead of
+  // `getBoundingClientRect`, which would force a synchronous layout. The
+  // trigger thresholds are pre-computed per card in `calculateRanges()`.
   const shouldBeOpenNow = useCallback(() => {
-    const top = getCardTop();
-    if (top === null) return false;
-    const openTriggerY = window.innerHeight * 0.4;
-    return top <= openTriggerY;
-  }, [getCardTop]);
+    return scrollYProgress.get() >= openTriggerProgress;
+  }, [openTriggerProgress, scrollYProgress]);
   const shouldBeClosedNow = useCallback(() => {
-    const top = getCardTop();
-    if (top === null) return false;
-    const closeTriggerY = window.innerHeight * 0.6;
-    return top > closeTriggerY;
-  }, [getCardTop]);
+    return scrollYProgress.get() < closeTriggerProgress;
+  }, [closeTriggerProgress, scrollYProgress]);
   const runBorderOpenPhase = useCallback(
     () =>
       introControls.start({
@@ -376,16 +372,19 @@ const AnimatedCard = ({
 
   useEffect(() => {
     if (prefersReducedMotion || !shouldAnimate || sequenceInFlightRef.current) return;
-    const el = cardElRef.current;
-    if (!el) return;
-    const openTriggerY = window.innerHeight * 0.4;
-    const top = el.getBoundingClientRect().top;
-    prevTopRef.current = top;
+    if (containerHeight === 0) return;
 
-    if (top <= openTriggerY) {
+    if (scrollYProgress.get() >= openTriggerProgress) {
       runIntroSequence();
     }
-  }, [prefersReducedMotion, runIntroSequence, shouldAnimate]);
+  }, [
+    containerHeight,
+    openTriggerProgress,
+    prefersReducedMotion,
+    runIntroSequence,
+    scrollYProgress,
+    shouldAnimate,
+  ]);
 
   // ----- Base Y (translateY) -----
   const baseY = useTransform(scrollYProgress, (latest) => {
@@ -513,22 +512,31 @@ const AnimatedCard = ({
       }
     }
 
+    // Only attach the `filter: blur(...)` style while actually inside the exit
+    // blur range. Outside of it, the filter prop is omitted so the card is not
+    // permanently promoted to a GPU filter layer.
+    if (shouldAnimate && !hasFadeRange && !isLastAnimated) {
+      const inBlurWindow = latest > safeExitStart && latest < safeEnd;
+      if (inBlurWindow && !isExitBlurring) {
+        setIsExitBlurring(true);
+      } else if (!inBlurWindow && isExitBlurring) {
+        setIsExitBlurring(false);
+      }
+    } else if (isExitBlurring) {
+      setIsExitBlurring(false);
+    }
+
     if (prefersReducedMotion || !shouldAnimate) return;
 
-    const el = cardElRef.current;
-    if (!el) return;
-    const openTriggerY = window.innerHeight * 0.4;
-    const closeTriggerY = window.innerHeight * 0.6;
-    const currentTop = el.getBoundingClientRect().top;
-    const previousTop = prevTopRef.current ?? currentTop;
-    prevTopRef.current = currentTop;
-
+    // Open/close crossings are evaluated purely from scroll progress, using
+    // thresholds pre-computed per card. This avoids a forced-layout
+    // `getBoundingClientRect` read on every scroll tick.
     const isDownward = latest > previous;
     const isUpward = latest < previous;
     const crossedIntoEntry =
-      previousTop > openTriggerY && currentTop <= openTriggerY;
+      previous < openTriggerProgress && latest >= openTriggerProgress;
     const crossedBackAboveEntry =
-      previousTop <= closeTriggerY && currentTop > closeTriggerY;
+      previous >= closeTriggerProgress && latest < closeTriggerProgress;
 
     if (isDownward && crossedIntoEntry) {
       runIntroSequence();
@@ -568,17 +576,19 @@ const AnimatedCard = ({
 
   return (
     <motion.div
-      ref={(el) => {
-        cardElRef.current = el;
-        refCb(el);
-      }}
+      ref={refCb}
       style={{
         scale: depthScale,
         y: shouldAnimate ? composedY : 0,
         transformPerspective: 1200,
         rotateX: depthTiltX,
         opacity,
-        filter: shouldAnimate && !hasFadeRange ? exitBlurFilter : "blur(0px)",
+        // Only attach `filter` while actively blurring during exit. Omitting it
+        // entirely (rather than using `blur(0px)`) avoids a persistent GPU
+        // filter layer on every card.
+        ...(shouldAnimate && !hasFadeRange && isExitBlurring
+          ? { filter: exitBlurFilter }
+          : {}),
         zIndex: z,
         marginTop: stackOffsetPx,
       }}

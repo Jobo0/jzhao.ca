@@ -2,7 +2,7 @@ import {
   useRef,
   useState,
   useLayoutEffect,
-  useEffect,
+  useMemo,
   Children,
   isValidElement,
   useId,
@@ -32,7 +32,7 @@ const CardScrollAnimationWrapper = ({
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const wrapperId = useId();
   const { pathname } = useRouter();
-  const childArray = Children.toArray(children);
+  const childArray = useMemo(() => Children.toArray(children), [children]);
   const firstAnimatedIndex = Math.min(
     Math.max(numFirstElements, 0),
     childArray.length
@@ -53,6 +53,8 @@ const CardScrollAnimationWrapper = ({
       revealEnd: number;
       overhang: number;
       containerHeight: number;
+      openTriggerProgress: number;
+      closeTriggerProgress: number;
     }>
   >([]);
   const [stickyEnabled, setStickyEnabled] = useState(false);
@@ -63,7 +65,14 @@ const CardScrollAnimationWrapper = ({
   });
 
   useLayoutEffect(() => {
-    const calculateRanges = () => {
+    let lastContainerHeight = -1;
+
+    // `toggleSticky` controls whether the sticky-off/on remeasurement dance
+    // runs. It is needed on the initial measurement (and on true window
+    // resizes) but is skipped on `ResizeObserver`-driven recalcs so that
+    // content reflows (images loading, address-bar show/hide) don't force a
+    // full re-render of every card mid-scroll.
+    const calculateRanges = (toggleSticky: boolean) => {
       if (!containerRef.current) return;
 
       const doCalc = () => {
@@ -73,6 +82,7 @@ const CardScrollAnimationWrapper = ({
 
         const containerHeight =
           containerEl.scrollHeight - viewportHeight;
+        lastContainerHeight = containerHeight;
 
         // Breakpoints are tuned per viewport so timing scales naturally across
         // screen sizes instead of inheriting fixed pixel values from old layouts.
@@ -90,6 +100,8 @@ const CardScrollAnimationWrapper = ({
               revealEnd: 0,
               overhang: 0,
               containerHeight: 0,
+              openTriggerProgress: 0,
+              closeTriggerProgress: 0,
             };
 
           const cardTop = ref.offsetTop;
@@ -122,6 +134,12 @@ const CardScrollAnimationWrapper = ({
           // Translation ends after the scroll distance equal to overhang.
           const revealEnd = enterEnd + overhangNormalized;
 
+          // Pre-computed scroll-progress thresholds equivalent to
+          // `getBoundingClientRect().top <= vh*0.4` (open) and `> vh*0.6` (close),
+          // so the scroll handler can decide open/close without forcing layout.
+          const openTriggerProgress = start - (viewportHeight * 0.4) / containerHeight;
+          const closeTriggerProgress = start - (viewportHeight * 0.6) / containerHeight;
+
           return {
             start,
             end,
@@ -132,63 +150,85 @@ const CardScrollAnimationWrapper = ({
             revealEnd,
             overhang,
             containerHeight,
+            openTriggerProgress,
+            closeTriggerProgress,
           };
         });
 
         setAnimationRanges(ranges);
-        requestAnimationFrame(() => {
-          setStickyEnabled(true);
-        });
+        if (toggleSticky) {
+          requestAnimationFrame(() => {
+            setStickyEnabled(true);
+          });
+        }
       };
 
-      setStickyEnabled(false);
-      // Defer to next frame so `.nonSticky` class is applied before measuring
-      requestAnimationFrame(doCalc);
+      if (toggleSticky) {
+        setStickyEnabled(false);
+        // Defer to next frame so `.nonSticky` class is applied before measuring
+        requestAnimationFrame(doCalc);
+      } else {
+        doCalc();
+      }
     };
 
     if (!containerRef.current) return;
     const observedContainer = containerRef.current;
 
-    // Initial calculation
-    calculateRanges();
-
-    // Observe container size changes (covers images/fonts loading)
-    const resizeObserver = new ResizeObserver(() => {
-      calculateRanges();
-    });
-    resizeObserver.observe(observedContainer);
+    // Initial calculation (requires the sticky-off/on dance)
+    calculateRanges(true);
 
     // Debounced handler for window resize events
     const resizeTimeoutRef = { current: null as number | null };
+    const observerTimeoutRef = { current: null as number | null };
 
     const handleResize = () => {
       if (resizeTimeoutRef.current !== null) {
         window.clearTimeout(resizeTimeoutRef.current);
       }
       resizeTimeoutRef.current = window.setTimeout(() => {
-        calculateRanges();
+        calculateRanges(true);
         resizeTimeoutRef.current = null;
       }, 100); // debounce delay
     };
 
+    const handleLoad = () => calculateRanges(true);
+
+    // Observe container size changes (covers images/fonts loading). Debounce
+    // the callback and skip when height hasn't meaningfully changed, so mobile
+    // address-bar resizes and minor reflows don't re-measure mid-scroll. We
+    // also skip the sticky-toggle here to avoid a render storm during scroll.
+    const resizeObserver = new ResizeObserver(() => {
+      if (observerTimeoutRef.current !== null) {
+        window.clearTimeout(observerTimeoutRef.current);
+      }
+      observerTimeoutRef.current = window.setTimeout(() => {
+        observerTimeoutRef.current = null;
+        if (!containerRef.current) return;
+        const nextHeight =
+          containerRef.current.scrollHeight - window.innerHeight;
+        if (Math.abs(nextHeight - lastContainerHeight) < 1) return;
+        calculateRanges(false);
+      }, 100);
+    });
+    resizeObserver.observe(observedContainer);
+
     // Recalculate on viewport resize & when all resources have loaded
     window.addEventListener("resize", handleResize);
-    window.addEventListener("load", calculateRanges);
+    window.addEventListener("load", handleLoad);
 
     return () => {
       resizeObserver.disconnect();
       if (resizeTimeoutRef.current !== null) {
         window.clearTimeout(resizeTimeoutRef.current);
       }
+      if (observerTimeoutRef.current !== null) {
+        window.clearTimeout(observerTimeoutRef.current);
+      }
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("load", calculateRanges);
+      window.removeEventListener("load", handleLoad);
     };
   }, [bottomSeenOffsetPx, childArray.length]);
-
-  useEffect(() => {
-    // Staged/snap-like scroll interception disabled: use native page scroll.
-    return undefined;
-  }, [firstAnimatedIndex, hasAnimatedCards, lastAnimatedIndex]);
 
   // Define a fallback range so that AnimatedCard always receives a full object
   const defaultRange: AnimationRange = {
@@ -201,6 +241,8 @@ const CardScrollAnimationWrapper = ({
     revealEnd: 0,
     overhang: 0,
     containerHeight: 0,
+    openTriggerProgress: 0,
+    closeTriggerProgress: 0,
   };
   const firstAnimatedRange = hasAnimatedCards
     ? (animationRanges[firstAnimatedIndex] ?? defaultRange)
@@ -225,7 +267,7 @@ const CardScrollAnimationWrapper = ({
 
         return (
           <AnimatedCard
-            key={index}
+            key={childKeys[index]}
             refCb={(el: HTMLDivElement | null) => {
               cardRefs.current[index] = el;
             }}
@@ -262,6 +304,8 @@ export interface AnimationRange {
   revealEnd: number;
   overhang: number;
   containerHeight: number;
+  openTriggerProgress: number;
+  closeTriggerProgress: number;
 }
 
 export default CardScrollAnimationWrapper;
