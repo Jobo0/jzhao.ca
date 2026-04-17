@@ -62,6 +62,12 @@
   }
 }
 
+@mixin respond-height-lg {
+  @include respond-height-below(variables.$breakpoint-height-lg) {
+    @content;
+  }
+}
+
 // Flexbox utilities
 @mixin flex-center {
   display: flex;

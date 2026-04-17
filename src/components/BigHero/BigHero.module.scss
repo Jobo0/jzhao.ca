@@ -6,12 +6,14 @@
 }
 
 .content {
-  padding: 280px 0;
+  padding: 480px 0;
   will-change: transform;
-}
 
-@include mixins.respond-height-sm {
-  .content {
+  @include mixins.respond-height-lg {
+    padding: 280px 0;
+  }
+
+  @include mixins.respond-height-sm {
     padding: 200px 0;
   }
 }
