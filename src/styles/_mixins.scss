@@ -19,6 +19,12 @@
   }
 }
 
+@mixin respond-height-below($height) {
+  @media (max-height: $height) {
+    @content;
+  }
+}
+
 // Convenience breakpoint mixins based on the project's standard breakpoints
 @mixin respond-xs {
   @include respond-above(variables.$breakpoint-xs) {
@@ -46,6 +52,18 @@
 
 @mixin respond-xl {
   @include respond-above(variables.$breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin respond-height-sm {
+  @include respond-height-below(variables.$breakpoint-height-sm) {
+    @content;
+  }
+}
+
+@mixin respond-height-lg {
+  @include respond-height-below(variables.$breakpoint-height-lg) {
     @content;
   }
 }

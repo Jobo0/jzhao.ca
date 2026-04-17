@@ -5,6 +5,8 @@
   width: 100%;
   padding-top: 20px;
   padding-inline: 140px;
+  max-width: 1600px;
+  margin: 0 auto;
 
   @include mixins.respond-below(variables.$breakpoint-lg) {
     padding-inline: 100px;

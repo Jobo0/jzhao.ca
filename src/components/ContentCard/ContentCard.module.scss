@@ -1,6 +1,17 @@
+  @use "../../styles/mixins" as mixins;
 // Use padding-block only so WindowCard horizontal padding is not overridden by a
 // shorthand `padding: N 0` (left/right 0 wins over sibling-module order in prod).
 .card {
-  padding-top: 140px;
-  padding-bottom: 140px;
+  padding-top: 200px;
+  padding-bottom: 200px;
+
+  @include mixins.respond-height-lg {
+    padding-top: 140px;
+    padding-bottom: 140px;
+  }
+
+  @include mixins.respond-height-sm {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
 }

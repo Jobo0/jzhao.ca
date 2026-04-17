@@ -46,6 +46,12 @@ const ContactLinksGallery = dynamic(
   { ssr: true }
 );
 
+const CardScrollContainer = dynamic(
+  () =>
+    import("@/components/CardScrollAnimation/CardScrollContainer/CardScrollContainer"),
+  { ssr: true }
+);
+
 const ExperienceTimelineCard = dynamic(
   () => import("@/components/ExperienceTimelineCard/ExperienceTimelineCard"),
   { ssr: true }
@@ -479,6 +485,37 @@ Builder.registerComponent(ContactLinksGallery, {
       name: "className",
       type: "string",
       helperText: "Optional extra class name",
+    },
+  ],
+});
+
+Builder.registerComponent(CardScrollContainer, {
+  name: "CardScrollContainer",
+  friendlyName: "Card scroll stack",
+  canHaveChildren: true,
+  inputs: [
+    {
+      name: "numFirstElements",
+      type: "number",
+      defaultValue: 0,
+      min: 0,
+      helperText:
+        "Number of leading children that skip the staged scroll + intro animation (e.g. a hero block).",
+    },
+    {
+      name: "numLastElements",
+      type: "number",
+      defaultValue: 1,
+      min: 0,
+      helperText:
+        "Number of trailing children that skip the sticky scroll effect (e.g. a footer card).",
+    },
+    {
+      name: "bottomSeenOffsetPx",
+      type: "number",
+      defaultValue: 0,
+      helperText:
+        "Adjust when a sticky card is treated as having reached its bottom. Positive = earlier, negative = later.",
     },
   ],
 });

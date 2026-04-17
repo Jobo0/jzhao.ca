@@ -37,7 +37,12 @@ const WindowCard = ({ children, className, ariaLabel }: WindowCardProps) => {
 
   if (reducedMotion) {
     return (
-      <div className={clsx(styles.root, className)} aria-label={ariaLabel} role="group">
+      <div
+        className={clsx(styles.root, className)}
+        aria-label={ariaLabel}
+        role="group"
+        data-window-card-root
+      >
         {children}
       </div>
     );
@@ -49,6 +54,7 @@ const WindowCard = ({ children, className, ariaLabel }: WindowCardProps) => {
       className={clsx(styles.root, styles.parallaxRoot, className)}
       aria-label={ariaLabel}
       role="group"
+      data-window-card-root
       style={{ x: springX, y: springY }}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
