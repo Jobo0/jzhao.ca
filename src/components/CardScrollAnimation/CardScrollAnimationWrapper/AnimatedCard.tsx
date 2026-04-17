@@ -3,6 +3,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type CSSProperties,
   type ReactNode,
 } from "react";
@@ -73,6 +74,9 @@ const AnimatedCard = ({
   const prevTopRef = useRef<number | null>(null);
   const introPreparedRef = useRef(false);
   const cardElRef = useRef<HTMLDivElement | null>(null);
+  // Release last animated card from sticky once it is fully revealed, so the
+  // footer pushes it up naturally regardless of footer height vs. overhang.
+  const [isReleased, setIsReleased] = useState(false);
 
   const hiddenIntroState = useMemo(
     () =>
@@ -418,8 +422,11 @@ const AnimatedCard = ({
       );
     }
 
-    // 4. Final animated card holds at full reveal for footer handoff.
-    return -overhang;
+    // 4. Final animated card: hold at full reveal while still sticky; once
+    // released into normal flow, reset translate so the footer push-up stays
+    // visually continuous (see plan: sticky + (-O) and non-sticky + 0 both
+    // evaluate to visual top = -O at the release boundary).
+    return isReleased ? 0 : -overhang;
   });
 
   // ----- Presentation Y: small settle movement during entry -----
@@ -494,6 +501,18 @@ const AnimatedCard = ({
     const previous = prevProgressRef.current;
     prevProgressRef.current = latest;
 
+    // Flip the sticky-release flag for the last animated card around revealEnd.
+    // Hysteresis avoids rapid toggling from sub-pixel scroll jitter at the
+    // exact boundary.
+    if (isLastAnimated) {
+      const releaseHysteresis = 0.0005;
+      if (!isReleased && latest > revealEnd + releaseHysteresis) {
+        setIsReleased(true);
+      } else if (isReleased && latest < revealEnd - releaseHysteresis) {
+        setIsReleased(false);
+      }
+    }
+
     if (prefersReducedMotion || !shouldAnimate) return;
 
     const el = cardElRef.current;
@@ -527,7 +546,7 @@ const AnimatedCard = ({
       ? styles.lastCard
       : styles.card;
   const stickyClassName = isSticky
-    ? stickyEnabled
+    ? stickyEnabled && !(isLastAnimated && isReleased)
       ? styles.stickyCard
       : styles.nonSticky
     : "";
