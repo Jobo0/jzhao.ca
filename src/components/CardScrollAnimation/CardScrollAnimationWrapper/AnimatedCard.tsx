@@ -540,6 +540,12 @@ const AnimatedCard = ({
 
     if (prefersReducedMotion || !shouldAnimate) return;
 
+    // Deadband: ignore scroll changes smaller than ~0.0002 of container
+    // progress. Mobile scroll momentum and overscroll rubber-band at the
+    // page end fire many sub-pixel change events; without this filter they
+    // would churn through the open/close crossing logic on every tick.
+    if (Math.abs(latest - previous) < 0.0002) return;
+
     // Open/close crossings are evaluated purely from scroll progress, using
     // thresholds pre-computed per card. This avoids a forced-layout
     // `getBoundingClientRect` read on every scroll tick.

@@ -68,19 +68,30 @@ const CardScrollAnimationWrapper = ({
 
   useLayoutEffect(() => {
     let lastContainerHeight = -1;
+    let lastViewportWidth = window.innerWidth;
+
+    // Mobile browsers (iOS Safari, Android Chrome) change `window.innerHeight`
+    // when the URL/nav bar collapses or expands, but the page layout stays
+    // against the larger *layout viewport*. Using `documentElement.clientHeight`
+    // (with an innerHeight fallback) gives us that stable layout height so
+    // `overhang`, trigger thresholds, and `naturalReleaseProgress` don't drift
+    // whenever the browser chrome toggles.
+    const getStableViewportHeight = () =>
+      document.documentElement.clientHeight || window.innerHeight;
 
     // `toggleSticky` controls whether the sticky-off/on remeasurement dance
-    // runs. It is needed on the initial measurement (and on true window
-    // resizes) but is skipped on `ResizeObserver`-driven recalcs so that
-    // content reflows (images loading, address-bar show/hide) don't force a
-    // full re-render of every card mid-scroll.
+    // runs. It is only needed on the very first measurement. After that,
+    // `offsetTop` / `offsetHeight` are stable regardless of pinning state
+    // (sticky doesn't remove the element from flow), so re-measurement on
+    // resize does not need the toggle — which prevents a render storm /
+    // visible flash of every sticky card flipping to `position: relative`.
     const calculateRanges = (toggleSticky: boolean) => {
       if (!containerRef.current) return;
 
       const doCalc = () => {
         if (!containerRef.current) return;
         const containerEl = containerRef.current;
-        const viewportHeight = window.innerHeight;
+        const viewportHeight = getStableViewportHeight();
 
         const containerHeight =
           containerEl.scrollHeight - viewportHeight;
@@ -126,8 +137,9 @@ const CardScrollAnimationWrapper = ({
           // Entry ends when the card reaches the sticky anchor.
           const enterEnd = start;
 
-          // Amount the card exceeds the viewport height.
-          const rawOverhang = Math.max(0, ref.offsetHeight - window.innerHeight);
+          // Amount the card exceeds the viewport height. Uses the stable
+          // layout viewport so mobile chrome collapse/expand doesn't change it.
+          const rawOverhang = Math.max(0, ref.offsetHeight - viewportHeight);
 
           // Positive offset means "consider bottom seen earlier" (less travel).
           // Negative offset means "consider bottom seen later" (more travel).
@@ -205,12 +217,20 @@ const CardScrollAnimationWrapper = ({
         window.clearTimeout(resizeTimeoutRef.current);
       }
       resizeTimeoutRef.current = window.setTimeout(() => {
-        calculateRanges(true);
         resizeTimeoutRef.current = null;
+        // Mobile browsers fire `resize` every time the URL bar collapses or
+        // expands, but the page layout doesn't change — only the visible
+        // viewport height. Skip the recalc when width is unchanged, so mobile
+        // chrome toggles don't shift our thresholds or trigger a re-render
+        // storm at page bottom.
+        const currentWidth = window.innerWidth;
+        if (currentWidth === lastViewportWidth) return;
+        lastViewportWidth = currentWidth;
+        calculateRanges(false);
       }, 100); // debounce delay
     };
 
-    const handleLoad = () => calculateRanges(true);
+    const handleLoad = () => calculateRanges(false);
 
     // Observe container size changes (covers images/fonts loading). Debounce
     // the callback and skip when height hasn't meaningfully changed, so mobile
@@ -224,7 +244,7 @@ const CardScrollAnimationWrapper = ({
         observerTimeoutRef.current = null;
         if (!containerRef.current) return;
         const nextHeight =
-          containerRef.current.scrollHeight - window.innerHeight;
+          containerRef.current.scrollHeight - getStableViewportHeight();
         if (Math.abs(nextHeight - lastContainerHeight) < 1) return;
         calculateRanges(false);
       }, 100);
