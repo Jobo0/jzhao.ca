@@ -55,6 +55,8 @@ const CardScrollAnimationWrapper = ({
       containerHeight: number;
       openTriggerProgress: number;
       closeTriggerProgress: number;
+      naturalReleaseProgress: number;
+      postReleaseTransform: number;
     }>
   >([]);
   const [stickyEnabled, setStickyEnabled] = useState(false);
@@ -88,6 +90,7 @@ const CardScrollAnimationWrapper = ({
         // screen sizes instead of inheriting fixed pixel values from old layouts.
         const enterLeadPx = clamp(viewportHeight * 0.28, 140, 340);
 
+        const scrollHeight = containerEl.scrollHeight;
         const ranges = cardRefs.current.map((ref, index) => {
           if (!ref || containerHeight <= 0)
             return {
@@ -102,6 +105,8 @@ const CardScrollAnimationWrapper = ({
               containerHeight: 0,
               openTriggerProgress: 0,
               closeTriggerProgress: 0,
+              naturalReleaseProgress: 0,
+              postReleaseTransform: 0,
             };
 
           const cardTop = ref.offsetTop;
@@ -140,6 +145,17 @@ const CardScrollAnimationWrapper = ({
           const openTriggerProgress = start - (viewportHeight * 0.4) / containerHeight;
           const closeTriggerProgress = start - (viewportHeight * 0.6) / containerHeight;
 
+          // `position: sticky; top: 0` releases naturally when the card's
+          // bottom would exit its containing block (cardContainer). That
+          // happens at scrollY = scrollHeight - h_card. Store the equivalent
+          // progress and the constant transform value that keeps the card's
+          // visual motion continuous across that browser-native transition.
+          const cardHeight = ref.offsetHeight;
+          const naturalReleaseProgress =
+            (scrollHeight - cardHeight) / containerHeight;
+          const postReleaseTransform =
+            cardTop + cardHeight - scrollHeight;
+
           return {
             start,
             end,
@@ -152,6 +168,8 @@ const CardScrollAnimationWrapper = ({
             containerHeight,
             openTriggerProgress,
             closeTriggerProgress,
+            naturalReleaseProgress,
+            postReleaseTransform,
           };
         });
 
@@ -243,6 +261,8 @@ const CardScrollAnimationWrapper = ({
     containerHeight: 0,
     openTriggerProgress: 0,
     closeTriggerProgress: 0,
+    naturalReleaseProgress: 0,
+    postReleaseTransform: 0,
   };
   const firstAnimatedRange = hasAnimatedCards
     ? (animationRanges[firstAnimatedIndex] ?? defaultRange)
@@ -306,6 +326,8 @@ export interface AnimationRange {
   containerHeight: number;
   openTriggerProgress: number;
   closeTriggerProgress: number;
+  naturalReleaseProgress: number;
+  postReleaseTransform: number;
 }
 
 export default CardScrollAnimationWrapper;

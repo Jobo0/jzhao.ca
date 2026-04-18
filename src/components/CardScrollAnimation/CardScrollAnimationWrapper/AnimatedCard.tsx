@@ -65,6 +65,8 @@ const AnimatedCard = ({
     containerHeight,
     openTriggerProgress,
     closeTriggerProgress,
+    naturalReleaseProgress,
+    postReleaseTransform,
   } = range;
   const prefersReducedMotion = useReducedMotion();
   const introControls = useAnimationControls();
@@ -78,9 +80,6 @@ const AnimatedCard = ({
   // so we can conditionally attach the `filter` style and avoid promoting every
   // card to a permanent compositor layer for `blur(0px)`.
   const [isExitBlurring, setIsExitBlurring] = useState(false);
-  // Release last animated card from sticky once it is fully revealed, so the
-  // footer pushes it up naturally regardless of footer height vs. overhang.
-  const [isReleased, setIsReleased] = useState(false);
 
   const hiddenIntroState = useMemo(
     () =>
@@ -370,17 +369,28 @@ const AnimatedCard = ({
     fadeOutEnd !== undefined &&
     fadeOutEnd > fadeOutStart;
 
+  // Re-evaluate the open/close state whenever the range thresholds change.
+  // This runs on mount AND after `calculateRanges()` refreshes (e.g. after a
+  // viewport resize), so if a resize shifts the card past the new close
+  // threshold we actually close it, and if it shifts past the open threshold
+  // we open it. Without this, `isOpenRef` would stay stuck in whichever state
+  // it was in against the pre-resize thresholds.
   useEffect(() => {
     if (prefersReducedMotion || !shouldAnimate || sequenceInFlightRef.current) return;
     if (containerHeight === 0) return;
 
-    if (scrollYProgress.get() >= openTriggerProgress) {
+    const progress = scrollYProgress.get();
+    if (progress >= openTriggerProgress && !isOpenRef.current) {
       runIntroSequence();
+    } else if (progress < closeTriggerProgress && isOpenRef.current) {
+      runCloseSequence();
     }
   }, [
+    closeTriggerProgress,
     containerHeight,
     openTriggerProgress,
     prefersReducedMotion,
+    runCloseSequence,
     runIntroSequence,
     scrollYProgress,
     shouldAnimate,
@@ -390,42 +400,56 @@ const AnimatedCard = ({
   const baseY = useTransform(scrollYProgress, (latest) => {
     if (isLast || containerHeight === 0) return 0;
 
-    // 1. Card entering - pinned in place
+    // Pre-entry: card below fold, sticky not yet pinning.
     if (latest < safeEnterEnd) return 0;
 
-    // 2. Reveal the bottom of the card by translating exactly the overhang amount
+    // The final animated card has its own release/continuation rules. It must
+    // branch on `naturalReleaseProgress` (not `revealEnd`), because when the
+    // trailing content below this card is shorter than `overhang` (common on
+    // narrow viewports), the browser releases sticky *before* our overhang
+    // reveal completes. If we kept using the overhang-based ramp in that range
+    // we'd apply a transform designed for the pinned state while the card is
+    // actually released — producing a growing gap with the footer as the card
+    // over-shoots, then a hundreds-of-pixels jump back when we finally switch
+    // to `postReleaseTransform` at `revealEnd`.
+    //
+    // The unified formula `(enterEnd - latest) * containerHeight` = `cardTop -
+    // scrollY` covers both the entry ramp and the post-reveal continuation in
+    // one expression, and stays continuous across the native sticky release
+    // (Phase 3 and Phase 4 both evaluate to `postReleaseTransform` at the
+    // boundary).
+    if (isLastAnimated) {
+      if (latest <= naturalReleaseProgress) {
+        return (enterEnd - latest) * containerHeight;
+      }
+      return postReleaseTransform;
+    }
+
+    // Non-final animated cards: ramp reveal, then parallax.
     if (latest < revealEnd && revealEnd > safeEnterEnd) {
       const progress = (latest - safeEnterEnd) / (revealEnd - safeEnterEnd);
       return -progress * overhang;
     }
 
-    // 3. After full reveal, non-final animated cards continue with a smooth
+    // After full reveal, non-final animated cards continue with a smooth
     // parallax drift (velocity ratio eases 1.0 -> 0.2 over 296px).
-    if (!isLastAnimated) {
-      const scrollPx = Math.max(0, (latest - revealEnd) * containerHeight);
+    const scrollPx = Math.max(0, (latest - revealEnd) * containerHeight);
 
-      if (scrollPx <= parallaxTransitionPx) {
-        const displacement =
-          scrollPx -
-          ((1 - parallaxFactor) * scrollPx * scrollPx) /
-            (2 * parallaxTransitionPx);
-        return -overhang - displacement;
-      }
-
-      const precomputedOffset =
-        (parallaxTransitionPx * (1 + parallaxFactor)) / 2;
-      return (
-        -overhang -
-        precomputedOffset -
-        (scrollPx - parallaxTransitionPx) * parallaxFactor
-      );
+    if (scrollPx <= parallaxTransitionPx) {
+      const displacement =
+        scrollPx -
+        ((1 - parallaxFactor) * scrollPx * scrollPx) /
+          (2 * parallaxTransitionPx);
+      return -overhang - displacement;
     }
 
-    // 4. Final animated card: hold at full reveal while still sticky; once
-    // released into normal flow, reset translate so the footer push-up stays
-    // visually continuous (see plan: sticky + (-O) and non-sticky + 0 both
-    // evaluate to visual top = -O at the release boundary).
-    return isReleased ? 0 : -overhang;
+    const precomputedOffset =
+      (parallaxTransitionPx * (1 + parallaxFactor)) / 2;
+    return (
+      -overhang -
+      precomputedOffset -
+      (scrollPx - parallaxTransitionPx) * parallaxFactor
+    );
   });
 
   // ----- Presentation Y: small settle movement during entry -----
@@ -500,18 +524,6 @@ const AnimatedCard = ({
     const previous = prevProgressRef.current;
     prevProgressRef.current = latest;
 
-    // Flip the sticky-release flag for the last animated card around revealEnd.
-    // Hysteresis avoids rapid toggling from sub-pixel scroll jitter at the
-    // exact boundary.
-    if (isLastAnimated) {
-      const releaseHysteresis = 0.0005;
-      if (!isReleased && latest > revealEnd + releaseHysteresis) {
-        setIsReleased(true);
-      } else if (isReleased && latest < revealEnd - releaseHysteresis) {
-        setIsReleased(false);
-      }
-    }
-
     // Only attach the `filter: blur(...)` style while actually inside the exit
     // blur range. Outside of it, the filter prop is omitted so the card is not
     // permanently promoted to a GPU filter layer.
@@ -554,7 +566,7 @@ const AnimatedCard = ({
       ? styles.lastCard
       : styles.card;
   const stickyClassName = isSticky
-    ? stickyEnabled && !(isLastAnimated && isReleased)
+    ? stickyEnabled
       ? styles.stickyCard
       : styles.nonSticky
     : "";
